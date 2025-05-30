@@ -1,0 +1,56 @@
+Header                                                  Score     Identity  Similarity
+>sequence1                                              10        0.833333  0.833333  
+
+
+>sequence4                                              9         0.5       0.5       
+
+
+>sequence5                                              0         0         0.5       
+
+
+>sequence2                                              -6        0         0         
+
+
+>sequence3                                              -20       0         0         
+
+
+>sequence1
+Score: 10    Identity: 0.833333    Similarity: 0.833333
+
+Query     1  AAAAAA  6
+             AAAAA 
+Hit       1  AAAAA-  5
+
+
+>sequence4
+Score: 9    Identity: 0.5    Similarity: 0.5
+
+Query     1  AAAAAA  6
+              A A A
+Hit       1  QAQAQA  6
+
+
+>sequence5
+Score: 0    Identity: 0    Similarity: 0.5
+
+Query     1  AAAAAA  6
+             + + + 
+Hit       1  SPSPSP  6
+
+
+>sequence2
+Score: -6    Identity: 0    Similarity: 0
+
+Query     1  AAAAAA  6
+                   
+Hit       1  EEEEEE  6
+
+
+>sequence3
+Score: -20    Identity: 0    Similarity: 0
+
+Query     1  AAAAAA--------  6
+                           
+Hit       1  ------DDDDDDDD  8
+
+
