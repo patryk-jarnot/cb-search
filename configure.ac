@@ -6,7 +6,7 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.11 subdir-objects])
 AC_CONFIG_FILES([Makefile])
-
+AC_PREFIX_DEFAULT([/usr])
 
 # Find python executable
 AM_PATH_PYTHON

@@ -5,13 +5,16 @@ This method is designed for searching for similar motifs with non-standard compo
 ## Dependencies
 
 NSC-Search has the following build dependencies:
-* autotools 20220109.1 or later
-* g++ 13.2.0 or later
-* python library and header files python3-dev 3.12.3 or later (to build python module)
+* g++ 12.2.0 or later
+* swig 4.0 or later
+* python library and header files python3-dev 3.11.2 or later
 
 ## Installation
 
-If you downloaded release version then you can install NSC-Search using the following commands:
+Release version can be downloaded from:
+* [Release version v1.0.0](https://github.com/patryk-jarnot/nsc-search/releases/download/v1.0.0/nscsearch-1.0.0.tar.gz)
+
+Then you can install NSC-Search using the following commands:
 
 ```[bash]
 ./configure
