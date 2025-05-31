@@ -33,3 +33,4 @@ install-root/
 m4/
 __pycache__/
 include/config-nscsearch.h.in~
+doc/

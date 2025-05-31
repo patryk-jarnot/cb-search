@@ -2,23 +2,37 @@
 
 This method is designed for searching for similar motifs with non-standard compositions which include homopolymers, short tandem repeats, low complexity regions and compositionally biased regions.
 
-## Compilation
+## Dependencies
 
 NSC-Search has the following build dependencies:
 * autotools 20220109.1 or later
-* GCC 13.3.0 or later
-* python library 13.12.3 or later (to build python module)
+* g++ 13.2.0 or later
+* python library and header files python3-dev 3.12.3 or later (to build python module)
+
+## Installation
+
+If you downloaded release version then you can install NSC-Search using the following commands:
+
+```[bash]
+./configure
+make
+make install
+```
+
+## Development version compilation
 
 To download NSC-Search source code use:
 
 ```[bash]
-git clone [url]
+git clone https://github.com/patryk-jarnot/nsc-search.git
 ```
 
 To build sources use:
 
 ```[bash]
-cd nsc_search
+cd nsc-search
+autoreconf -fi
+autoreconf -i
 mkdir build
 cd build
 INSTALLROOT=$PWD/../install-root
@@ -28,7 +42,7 @@ make install
 export PATH="$INSTALLROOT/bin:$PATH"
 ```
 
-To build python module use:
+To use python module execute:
 
 ```[bash]
 export PYTHONPATH=$(dirname $(find $INSTALLROOT -name nscsearch.py -print))

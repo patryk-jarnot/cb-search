@@ -53,10 +53,10 @@ libnscsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp 
 		include/alignment/nw/nwgapaffinitymatrices.hpp src/alignment/nw/nwgapaffinitymatrices.cpp \
 		include/alignment/nw/needlemanwunsch.hpp src/alignment/nw/needlemanwunsch.cpp
 
-	
+
 
 # [begin] BUILD PYTHON PACKAGE
-	
+
 BUILT_SOURCES = $(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp
 
 $(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp: include/python/nscsearch.i \
@@ -72,7 +72,10 @@ _nscsearch_la_LDFLAGS = -module ${PYTHON_LDFLAGS}
 _nscsearch_la_LIBADD = libnscsearch.la
 _nscsearch_la_CPPFLAGS = -I$(srcdir)/include ${PYTHON_CPPFLAGS}
 
-#EXTRA_DIST = m4/NOTES
+EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
+			 src/tests/data/empty.txt \
+			 src/tests/data/db_5_lcrs.fasta \
+			 src/tests/data/output_1.txt
 
 # [end] BUILD PYTHON PACKAGE
 
@@ -124,7 +127,7 @@ pythontest: $(builddir)/nscsearch.py
 	export PYTHONPATH=(pwd)
 	python -m unittest discover $(top_srcdir)/src/tests/python
 
-	
 
-	
-	
+
+
+
