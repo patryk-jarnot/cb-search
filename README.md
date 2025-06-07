@@ -72,6 +72,14 @@ For local alignment use:
 nscsearch -a 1 -q [query_file_fasta] -d [database_fasta]
 ```
 
+## Example
+
+To search for RGG/RG boxes using global-to-local algorithm in an example set execute the following:
+
+```[bash]
+./nscsearch -t 0.25 --gap-open=6 --gap-extend=2 -q example/Q01560.fasta -d example/database.fasta
+```
+
 ## Help
 
 To find more options use:
