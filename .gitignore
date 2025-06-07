@@ -31,7 +31,10 @@ include/config-nscsearch.h
 build/
 install-root/
 m4/
+aclocal.m4
 __pycache__/
 include/config-nscsearch.h.in~
 doc/
 result
+.direnv/
+TODO.md

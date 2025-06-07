@@ -1,5 +1,5 @@
 {
-  description = "nsc-search - A method for searching for similar motifs with non-standard compositions in protein sequences. ";
+  description = "nsc-search - A method for searching for similar motifs with non-standard compositions in protein sequences.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -11,23 +11,24 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        # Our C++ library with Python bindings
         nsc-search = pkgs.stdenv.mkDerivation rec {
           pname = "nsc-search";
           version = "1.0.0";
 
           src = ./.;
 
+          ## Dependencies that should only exist in the build environment.
           nativeBuildInputs = with pkgs; [
             autoconf
             automake
             libtool
             pkg-config
             swig
-            python3
-            python3Packages.setuptools
+            # python3
+            # python3Packages.setuptools
           ];
 
+          ## Dependencies that should exist in the runtime environment.
           buildInputs = with pkgs; [
             python3
             python3Packages.python
