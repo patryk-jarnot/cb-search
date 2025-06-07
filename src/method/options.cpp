@@ -7,6 +7,7 @@
 
 
 #include "method/options.hpp"
+#include "config-nscsearch.h"
 
 #include "debug.hpp"
 
@@ -130,7 +131,7 @@ int Options::parse_general_options(int argc, char **argv) {
         		return -1;
         	}
         	else if (strcmp(long_options[option_index].name, "version") == 0) {
-        		cout << "version: 0.0.1";
+        		cout << PACKAGE_STRING;
         		return -1;
         	}
         	else if (strcmp(long_options[option_index].name, "debug") == 0) {
