@@ -57,13 +57,13 @@ libnscsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp 
 
 # [begin] BUILD PYTHON PACKAGE
 
-BUILT_SOURCES = $(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp
+BUILT_SOURCES = $(builddir)/nscsearch_wrap.cpp
 
 $(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp: include/python/nscsearch.i \
-							include/python/identification.i \
-							include/python/examples.i
-		$(SWIG) $(AX_SWIG_PYTHON_OPT) -c++ -o $@ $<
-python_PYTHON = $(builddir)/nscsearch.py
+	include/python/identification.i \
+	include/python/examples.i
+	$(SWIG) -python -c++ -o $(builddir)/nscsearch_wrap.cpp $<
+python_PYTHON = nscsearch.py
 pyexec_LTLIBRARIES = _nscsearch.la
 _nscsearch_la_SOURCES = $(builddir)/nscsearch_wrap.cpp include/python/nscsearch.hpp include/python/nscsearch.i \
 						include/python/identification.hpp include/python/identification.i \
