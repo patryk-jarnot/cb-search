@@ -12,7 +12,7 @@ NSC-Search has the following build dependencies:
 ## Installation
 
 Release version can be downloaded from:
-* [Release version v1.0.0](https://github.com/patryk-jarnot/nsc-search/releases/download/v1.0.0/nscsearch-1.0.0.tar.gz)
+[Release version v1.0.1](https://github.com/patryk-jarnot/nsc-search/releases/download/v1.0.1/nscsearch-1.0.1.tar.gz)
 
 Then you can install NSC-Search using the following commands:
 
@@ -70,6 +70,14 @@ For local alignment use:
 
 ```[bash]
 nscsearch -a 1 -q [query_file_fasta] -d [database_fasta]
+```
+
+## Example
+
+To search for RGG/RG boxes using global-to-local algorithm in an example set execute the following:
+
+```[bash]
+./nscsearch -t 0.25 --gap-open=6 --gap-extend=2 -q example/Q01560.fasta -d example/database.fasta
 ```
 
 ## Help

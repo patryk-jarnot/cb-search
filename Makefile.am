@@ -75,7 +75,11 @@ _nscsearch_la_CPPFLAGS = -I$(srcdir)/include ${PYTHON_CPPFLAGS}
 EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
 			 src/tests/data/empty.txt \
 			 src/tests/data/db_5_lcrs.fasta \
-			 src/tests/data/output_1.txt
+			 src/tests/data/output_1.txt \
+			 example/LICENSE \
+			 example/Q01560.fasta \
+			 example/database.fasta
+
 
 # [end] BUILD PYTHON PACKAGE
 
