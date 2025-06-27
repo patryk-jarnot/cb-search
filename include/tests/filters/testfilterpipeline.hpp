@@ -1,0 +1,15 @@
+/*
+ * testfilterpipeline.hpp
+ *
+ *  Created on: Jun 25, 2025
+ *      Author: pjarnot
+ */
+
+#ifndef NSC_SEARCH_INCLUDE_TESTS_FILTERS_TESTFILTERPIPELINE_HPP_
+#define NSC_SEARCH_INCLUDE_TESTS_FILTERS_TESTFILTERPIPELINE_HPP_
+
+
+
+
+
+#endif /* NSC_SEARCH_INCLUDE_TESTS_FILTERS_TESTFILTERPIPELINE_HPP_ */

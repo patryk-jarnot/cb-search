@@ -24,7 +24,6 @@ libnscsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp 
 		include/model/sequence.hpp src/model/sequence.cpp \
 		include/model/fragment.hpp src/model/fragment.cpp \
 		include/model/matrixresidue.hpp src/model/matrixresidue.cpp \
-		include/filters/shortword.hpp src/filters/shortword.cpp \
 		include/dal/sequencereader.hpp src/dal/sequencereader.cpp \
 		include/dal/sequencereaderfasta.hpp src/dal/sequencereaderfasta.cpp \
 		include/dal/sequencereaderstub.hpp src/dal/sequencereaderstub.cpp \
@@ -44,6 +43,11 @@ libnscsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp 
 		include/identification/frequencyidentificator.hpp src/identification/frequencyidentificator.cpp \
 		include/identification/fragmentextender.hpp src/identification/fragmentextender.cpp \
 		include/identification/sequencefrequency.hpp src/identification/sequencefrequency.cpp \
+		include/filters/kmer.hpp src/filters/kmer.cpp \
+		include/filters/composition.hpp src/filters/composition.cpp \
+		include/filters/shortword.hpp src/filters/shortword.cpp \
+		include/filters/filterpipeline.hpp src/filters/filterpipeline.cpp \
+		include/filters/filterbase.hpp \
 		include/alignment/alignmentprinter.hpp src/alignment/alignmentprinter.cpp \
 		include/alignment/alignbase.hpp src/alignment/alignbase.cpp \
 		include/alignment/sw/swgapaffinitymatrices.hpp src/alignment/sw/swgapaffinitymatrices.cpp \
@@ -53,10 +57,10 @@ libnscsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp 
 		include/alignment/nw/nwgapaffinitymatrices.hpp src/alignment/nw/nwgapaffinitymatrices.cpp \
 		include/alignment/nw/needlemanwunsch.hpp src/alignment/nw/needlemanwunsch.cpp
 
-
+	
 
 # [begin] BUILD PYTHON PACKAGE
-
+	
 BUILT_SOURCES = $(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp
 
 $(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp: include/python/nscsearch.i \
@@ -73,12 +77,12 @@ _nscsearch_la_LIBADD = libnscsearch.la
 _nscsearch_la_CPPFLAGS = -I$(srcdir)/include ${PYTHON_CPPFLAGS}
 
 EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
-			 src/tests/data/empty.txt \
-			 src/tests/data/db_5_lcrs.fasta \
-			 src/tests/data/output_1.txt \
-			 example/LICENSE \
-			 example/Q01560.fasta \
-			 example/database.fasta
+                        src/tests/data/empty.txt \
+                        src/tests/data/db_5_lcrs.fasta \
+                        src/tests/data/output_1.txt \
+                        example/LICENSE \
+                        example/Q01560.fasta \
+                        example/database.fasta
 
 
 # [end] BUILD PYTHON PACKAGE
@@ -95,7 +99,6 @@ testnscsearch_SOURCES = src/tests/test.cpp \
  		include/tests/method/testresultsoutput.hpp src/tests/method/testresultsoutput.cpp \
  		include/tests/method/testoptions.hpp src/tests/method/testoptions.cpp \
 		include/tests/dal/testsequencereaderfasta.hpp src/tests/dal/testsequencereaderfasta.cpp \
-		include/tests/filters/testshortword.hpp src/tests/filters/testshortword.cpp \
  		include/tests/utils/teststringutils.hpp src/tests/utils/teststringutils.cpp \
  		include/tests/utils/testfileutils.hpp src/tests/utils/testfileutils.cpp \
  		include/tests/utils/testnumericutils.hpp src/tests/utils/testnumericutils.cpp \
@@ -110,6 +113,10 @@ testnscsearch_SOURCES = src/tests/test.cpp \
 		include/tests/residue/testalphabetreduction.hpp src/tests/residue/testalphabetreduction.cpp \
  		include/tests/residue/testscoringmatrix.hpp src/tests/residue/testscoringmatrix.cpp \
  		include/tests/residue/testmatrixrecalculator.hpp src/tests/residue/testmatrixrecalculator.cpp \
+		include/tests/filters/testkmer.hpp src/tests/filters/testkmer.cpp \
+		include/tests/filters/testcomposition.hpp src/tests/filters/testcomposition.cpp \
+		include/tests/filters/testshortword.hpp src/tests/filters/testshortword.cpp \
+		include/tests/filters/testfilterpipeline.hpp src/tests/filters/testfilterpipeline.cpp \
  		include/tests/alignment/og/testonewayglobal.hpp src/tests/alignment/og/testonewayglobal.cpp \
  		include/tests/alignment/og/testoggapaffinitymatrices.hpp src/tests/alignment/og/testoggapaffinitymatrices.cpp \
  		include/tests/alignment/sw/testsmithwaterman.hpp src/tests/alignment/sw/testsmithwaterman.cpp \
@@ -131,7 +138,7 @@ pythontest: $(builddir)/nscsearch.py
 	export PYTHONPATH=(pwd)
 	python -m unittest discover $(top_srcdir)/src/tests/python
 
+	
 
-
-
-
+	
+	

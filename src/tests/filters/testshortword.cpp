@@ -27,7 +27,7 @@ void test_swf_identical_sequences() {
 	swf.set_query(query);
 	bool is_similar = swf.is_similar(db_seqeunce);
 
-//	ASSERT(is_similar);
+	ASSERT(is_similar);
 }
 
 
@@ -39,7 +39,7 @@ void test_swf_similar_sequences() {
 	swf.set_query(query);
 	bool is_similar = swf.is_similar(db_seqeunce);
 
-//	ASSERT(is_similar);
+	ASSERT(is_similar);
 }
 
 

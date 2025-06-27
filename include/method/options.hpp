@@ -23,7 +23,7 @@ class Options
 public:
 	Options() :  gap_open(10.0), gap_extension(0.5), threshold(0.7), limit(500),
 		thread_count(1), debug_level(0), alpha_of_cbr_correction(-1), similarity_threshold(0.7), relative_threshold(0.1),
-		is_composition_identification(false), sort_output_by(SortOutputBy::SIMI_SCORE), output_format(OutputFormat::HUMAN),
+		is_composition_identification(false), kmer_filter_threshold(0.3), sort_output_by(SortOutputBy::SIMI_SCORE), output_format(OutputFormat::HUMAN),
 		align_algorithm(AlignAlgorithm::ONE_WAY_GLOBAL) {
 	}
 	virtual ~Options() {}
@@ -48,6 +48,7 @@ public:
 	float get_similarity_threshold() { return similarity_threshold; }
 	float get_relative_threshold() { return relative_threshold; }
 	bool get_is_composition_identification() { return is_composition_identification; }
+	float get_kmer_filter_threshold() { return kmer_filter_threshold; }
 	OutputFormat get_output_format() { return output_format; }
 
 	void set_is_composition_identification(bool iis_composition_identification) { is_composition_identification = iis_composition_identification; }
@@ -68,6 +69,7 @@ private:
 	float similarity_threshold;
 	float relative_threshold;
 	bool is_composition_identification;
+	float kmer_filter_threshold;
 	std::string unmasked_residues;
 	SortOutputBy sort_output_by;
 	OutputFormat output_format;

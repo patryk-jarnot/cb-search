@@ -59,6 +59,8 @@ void Options::show_help() {
     cout << "                               (default: " << alpha_of_cbr_correction << ")\n";
     cout << "      --gap-open=FLOAT       Gap open cost. (default: " << gap_open << ")\n";
     cout << "      --gap-extend=FLOAT     Gap extension cost. (default: " << gap_extension << ")\n";
+    cout << "      --kmer-filter=FLOAT    Filter out sequences with fraction of identical dimers";
+    cout << "                               below a given threshold. (default: " << kmer_filter_threshold << ")\n";
     cout << "\n";
     cout << "SimiComp:\n";
     cout << "      --simi-comp            If set, the method will search for compositionally\n";
@@ -115,6 +117,7 @@ int Options::parse_general_options(int argc, char **argv) {
             {"debug",    required_argument,       0,  0 },
             {"umask-residues",    required_argument,       0,  0 },
             {"cbr-corr-alpha",    required_argument,       0,  0 },
+            {"kmer-filter",    required_argument,       0,  0 },
             {0,         0,                 0,  0 }
         };
 
@@ -163,6 +166,9 @@ int Options::parse_general_options(int argc, char **argv) {
         	}
         	else if (strcmp(long_options[option_index].name, "cbr-corr-alpha") == 0) {
 				alpha_of_cbr_correction = atof(optarg);
+        	}
+        	else if (strcmp(long_options[option_index].name, "kmer-filter") == 0) {
+				kmer_filter_threshold = atof(optarg);
         	}
             break;
 

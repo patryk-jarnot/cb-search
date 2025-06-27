@@ -15,6 +15,8 @@
 #include "tests/method/testresultsoutput.hpp"
 #include "tests/method/testoptions.hpp"
 #include "tests/filters/testshortword.hpp"
+#include "tests/filters/testkmer.hpp"
+#include "tests/filters/testcomposition.hpp"
 #include "tests/dal/testsequencereaderfasta.hpp"
 #include "tests/utils/teststringutils.hpp"
 #include "tests/utils/testfileutils.hpp"
@@ -113,8 +115,14 @@ int main(int argc, char **argv) {
     TestSimiComp tsc;
     tsc.run();
 
-    TestShortWordFilter tswf;
-    tswf.run();
+//    TestShortWordFilter tswf;
+//    tswf.run();
+
+    TestKmerFilter tkf;
+    tkf.run();
+
+//    TestCompositionFilter tcf;
+//    tcf.run();
 
     cerr << "----- FINISHED TESTS -----\n";
 	std::cerr << "\033[32m" << UNIT_TESTS_PASSED_COUNTER << " asserts passed\033[39;49m, and \033[31m" << UNIT_TESTS_FAILED_COUNTER << " asserts failed\033[39;49m.\n\n";

@@ -27,17 +27,6 @@ using namespace nscsearch;
 using namespace std;
 
 
-void TestNscSearch::run() {
-	initialize_data();
-
-	test_serach_sequence();
-	test_serach_sequence_with_composition_identification();
-	test_serach_sequence_in_threshold_scope();
-	test_serach_sequence_out_of_threshold();
-
-	std::cerr << "\n";
-}
-
 
 void TestNscSearch::initialize_data() {
 	opt.set_align_algorithm(AlignAlgorithm::GLOBAL);
@@ -90,7 +79,7 @@ void TestNscSearch::test_serach_sequence_with_composition_identification() {
 }
 
 
-void TestNscSearch::test_serach_sequence_in_threshold_scope() {
+void test_serach_sequence_in_threshold_scope_not_common_kmers() {
 	SequenceReaderStub database_sequences;
 	database_sequences.add_sequence(Sequence(">sp|E1C7T6|TYW5_CHICK tRNA wybutosine-synthesizing protein 5 OS=Gallus gallus OX=9031 GN=TYW5 PE=3 SV=1", "MEQREQPAVQVPSLDGVTRERFLRDVYPRREP"));
 
@@ -106,7 +95,7 @@ void TestNscSearch::test_serach_sequence_in_threshold_scope() {
 		Sequence sequence = query_sequences.get_next_sequence();
 		results_t result = ns.scan_database(sequence);
 
-		ASSERT(result.alignments.size() == 1);
+		ASSERT(result.alignments.size() == 0);
 	}
 }
 
@@ -131,4 +120,15 @@ void TestNscSearch::test_serach_sequence_out_of_threshold() {
 	}
 }
 
+
+void TestNscSearch::run() {
+	initialize_data();
+
+	test_serach_sequence();
+	test_serach_sequence_with_composition_identification();
+	test_serach_sequence_in_threshold_scope_not_common_kmers();
+	test_serach_sequence_out_of_threshold();
+
+	std::cerr << "\n";
+}
 
