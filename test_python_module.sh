@@ -1,6 +1,6 @@
-# #!/usr/bin/env bash
+#!/usr/bin/env bash
 
-# set -e
+set -e
 
 
 # autoreconf -fi
@@ -20,13 +20,12 @@
 # make install
 
 
-# # exact destination depends on python version
-# # this is a hack; the idea is to get wherever "example.py" and "_example.so" are
-# # onto PYTHONPATH
+# exact destination depends on python version
+# this is a hack; the idea is to get wherever "example.py" and "_example.so" are
+# onto PYTHONPATH
 # export PYTHONPATH=$(dirname $(find $INSTALLROOT -name nscsearch.py -print))
-# #python -c 'import example; example.example_hello()'
-# python3 -c 'import nscsearch; nscsearch.example_hello()'
 
+PYTHONPATH=$(dirname $(find result/ -name nscsearch.py -print))
 
-
-# TODO
+#python -c 'import example; example.example_hello()'
+python3 -c 'import nscsearch; nscsearch.example_hello()'
