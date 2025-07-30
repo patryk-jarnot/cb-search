@@ -16,11 +16,11 @@
           clang = pkgs.callPackage ./package.nix { stdenv = pkgs.clangStdenv; };
         } // pkgs.lib.optionalAttrs (system != "x86_64-linux") {
           crossIntel = pkgs.pkgsCross.gnu64.callPackage ./package.nix {
-            # enableTests = false;
+            doCheck = false;
           };
         } // pkgs.lib.optionalAttrs (system != "aarch64-linux") {
           crossAarch64 = pkgs.pkgsCross.aarch64-multiplatform.callPackage ./package.nix {
-            # enableTests = false;
+            doCheck = false;
           };
         };
         
