@@ -1,10 +1,10 @@
-# NSC-Search: Method for similarity analyses of motifs with non-standard amino acid compositions.
+# CB-Search: Method for similarity analyses of motifs with non-standard amino acid compositions.
 
 This method is designed for searching for similar motifs with non-standard compositions which include homopolymers, short tandem repeats, low complexity regions and compositionally biased regions.
 
 ## Dependencies
 
-NSC-Search has the following build dependencies:
+CB-Search has the following build dependencies:
 * g++ 12.2.0 or later
 * swig 4.0 or later
 * python library and header files python3-dev 3.11.2 or later
@@ -14,7 +14,7 @@ NSC-Search has the following build dependencies:
 Release version can be downloaded from:
 [Release version v1.0.1](https://github.com/patryk-jarnot/nsc-search/releases/download/v1.0.1/nscsearch-1.0.1.tar.gz)
 
-Then you can install NSC-Search using the following commands:
+Then you can install CB-Search using the following commands:
 
 ```[bash]
 ./configure
@@ -24,16 +24,16 @@ make install
 
 ## Development version compilation
 
-To download NSC-Search source code use:
+To download CB-Search source code use:
 
 ```[bash]
-git clone https://github.com/patryk-jarnot/nsc-search.git
+git clone https://github.com/patryk-jarnot/cb-search.git
 ```
 
 To build sources use:
 
 ```[bash]
-cd nsc-search
+cd cb-search
 autoreconf -fi
 autoreconf -i
 mkdir build
@@ -48,8 +48,8 @@ export PATH="$INSTALLROOT/bin:$PATH"
 To use python module execute:
 
 ```[bash]
-export PYTHONPATH=$(dirname $(find $INSTALLROOT -name nscsearch.py -print))
-python3 -c 'import nscsearch; nscsearch.example_hello()'
+export PYTHONPATH=$(dirname $(find $INSTALLROOT -name cbsearch.py -print))
+python3 -c 'import cbsearch; cbsearch.example_hello()'
 ```
 
 ## Usage
@@ -57,19 +57,19 @@ python3 -c 'import nscsearch; nscsearch.example_hello()'
 To search for similar sequences using global-to-local alignment use:
 
 ```[bash]
-nscsearch -q [query_file_fasta] -d [database_fasta]
+cbsearch -q [query_file_fasta] -d [database_fasta]
 ```
 
 To use SimiComp to identify fragments of similar compositions and align them globally to the query use:
 
 ```[bash]
-nscsearch -a 0 --simi-comp -q [query_file_fasta] -d [database_fasta]
+cbsearch -a 0 --simi-comp -q [query_file_fasta] -d [database_fasta]
 ```
 
 For local alignment use:
 
 ```[bash]
-nscsearch -a 1 -q [query_file_fasta] -d [database_fasta]
+cbsearch -a 1 -q [query_file_fasta] -d [database_fasta]
 ```
 
 ## Example
@@ -77,7 +77,7 @@ nscsearch -a 1 -q [query_file_fasta] -d [database_fasta]
 To search for RGG/RG boxes using global-to-local algorithm in an example set execute the following:
 
 ```[bash]
-./nscsearch -t 0.25 --gap-open=6 --gap-extend=2 -q example/Q01560.fasta -d example/database.fasta
+./cbsearch -t 0.25 --gap-open=6 --gap-extend=2 -q example/Q01560.fasta -d example/database.fasta
 ```
 
 ## Help
@@ -85,7 +85,7 @@ To search for RGG/RG boxes using global-to-local algorithm in an example set exe
 To find more options use:
 
 ```[bash]
-nscsearch --help
+cbsearch --help
 ```
 
 ## Links
