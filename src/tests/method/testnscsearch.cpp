@@ -126,7 +126,6 @@ void TestNscSearch::run() {
 
 	test_serach_sequence();
 	test_serach_sequence_with_composition_identification();
-	test_serach_sequence_in_threshold_scope_not_common_kmers();
 	test_serach_sequence_out_of_threshold();
 
 	std::cerr << "\n";

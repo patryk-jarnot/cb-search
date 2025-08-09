@@ -4,17 +4,17 @@ AM_CXXFLAGS = -g -fpic -Wall -std=c++11 -I$(top_srcdir)/include -pthread
 AM_LDFLAGS =
 
 ACLOCAL_AMFLAGS = -I m4 --install
-all: libnscsearch.la nscsearch $(builddir)/nscsearch.py test
+all: libcbsearch.la cbsearch $(builddir)/cbsearch.py test
 
-bin_PROGRAMS = nscsearch testnscsearch
+bin_PROGRAMS = cbsearch testcbsearch
 
 
-lib_LTLIBRARIES = libnscsearch.la
-libnscsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp \
+lib_LTLIBRARIES = libcbsearch.la
+libcbsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp \
 		include/constants.hpp \
 		include/exceptions.hpp \
 		include/python/examples.hpp src/python/examples.cpp \
-		include/python/nscsearch.hpp src/python/nscsearch.cpp \
+		include/python/cbsearch.hpp src/python/cbsearch.cpp \
 		include/python/identification.hpp src/python/identification.cpp \
 		include/method/options.hpp src/method/options.cpp \
 		include/method/resultsoutput.hpp src/method/resultsoutput.cpp \
@@ -61,20 +61,20 @@ libnscsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp 
 
 # [begin] BUILD PYTHON PACKAGE
 	
-BUILT_SOURCES = $(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp
+BUILT_SOURCES = $(builddir)/cbsearch.py $(builddir)/cbsearch_wrap.cpp
 
-$(builddir)/nscsearch.py $(builddir)/nscsearch_wrap.cpp: include/python/nscsearch.i \
+$(builddir)/cbsearch.py $(builddir)/cbsearch_wrap.cpp: include/python/cbsearch.i \
 							include/python/identification.i \
 							include/python/examples.i
 		$(SWIG) $(AX_SWIG_PYTHON_OPT) -c++ -o $@ $<
-python_PYTHON = $(builddir)/nscsearch.py
-pyexec_LTLIBRARIES = _nscsearch.la
-_nscsearch_la_SOURCES = $(builddir)/nscsearch_wrap.cpp include/python/nscsearch.hpp include/python/nscsearch.i \
+python_PYTHON = $(builddir)/cbsearch.py
+pyexec_LTLIBRARIES = _cbsearch.la
+_cbsearch_la_SOURCES = $(builddir)/cbsearch_wrap.cpp include/python/cbsearch.hpp include/python/cbsearch.i \
 						include/python/identification.hpp include/python/identification.i \
 						include/python/examples.hpp include/python/examples.i
-_nscsearch_la_LDFLAGS = -module ${PYTHON_LDFLAGS}
-_nscsearch_la_LIBADD = libnscsearch.la
-_nscsearch_la_CPPFLAGS = -I$(srcdir)/include ${PYTHON_CPPFLAGS}
+_cbsearch_la_LDFLAGS = -module ${PYTHON_LDFLAGS}
+_cbsearch_la_LIBADD = libcbsearch.la
+_cbsearch_la_CPPFLAGS = -I$(srcdir)/include ${PYTHON_CPPFLAGS}
 
 EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
                         src/tests/data/empty.txt \
@@ -89,11 +89,11 @@ EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
 
 
 
-nscsearch_SOURCES = src/main.cpp
-nscsearch_LDADD = libnscsearch.la
+cbsearch_SOURCES = src/main.cpp
+cbsearch_LDADD = libcbsearch.la
 
 
-testnscsearch_SOURCES = src/tests/test.cpp \
+testcbsearch_SOURCES = src/tests/test.cpp \
  		include/tests/alignment/testalignmentprinter.hpp src/tests/alignment/testalignmentprinter.cpp \
  		include/tests/method/testnscsearch.hpp src/tests/method/testnscsearch.cpp \
  		include/tests/method/testresultsoutput.hpp src/tests/method/testresultsoutput.cpp \
@@ -124,17 +124,17 @@ testnscsearch_SOURCES = src/tests/test.cpp \
  		include/tests/alignment/nw/testneedlemanwunsch.hpp src/tests/alignment/nw/testneedlemanwunsch.cpp \
  		include/tests/alignment/nw/testnwgapaffinitymatrices.hpp src/tests/alignment/nw/testnwgapaffinitymatrices.cpp
 
-testnscsearch_LDADD = libnscsearch.la
+testcbsearch_LDADD = libcbsearch.la
 
 
-test: testnscsearch unittests
+test: testcbsearch unittests
 
 unittests:
-	./testnscsearch $(top_srcdir)
+	./testcbsearch $(top_srcdir)
 
 
-pythontest: $(builddir)/nscsearch.py
-	test -L _nscsearch.so || ln -s .libs/_nscsearch.so _nscsearch.so
+pythontest: $(builddir)/cbsearch.py
+	test -L _cbsearch.so || ln -s .libs/_cbsearch.so _cbsearch.so
 	export PYTHONPATH=(pwd)
 	python -m unittest discover $(top_srcdir)/src/tests/python
 

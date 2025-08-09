@@ -7,7 +7,7 @@
 
 
 #include "method/options.hpp"
-#include "config-nscsearch.h"
+#include "config-cbsearch.h"
 
 #include "debug.hpp"
 
@@ -23,7 +23,7 @@ using namespace std;
 using namespace nscsearch;
 
 void Options::show_help() {
-    cout << "Usage: nscsearch [options]\n";
+    cout << "Usage: cbsearch [options]\n";
     cout << "\n";
     cout << "Mandatory arguments to long options are mandatory for short options too.\n";
     cout << "\n";
@@ -59,7 +59,7 @@ void Options::show_help() {
     cout << "                               (default: " << alpha_of_cbr_correction << ")\n";
     cout << "      --gap-open=FLOAT       Gap open cost. (default: " << gap_open << ")\n";
     cout << "      --gap-extend=FLOAT     Gap extension cost. (default: " << gap_extension << ")\n";
-    cout << "      --kmer-filter=FLOAT    Filter out sequences with fraction of identical dimers";
+    cout << "      --kmer-filter=FLOAT    Filter out sequences with fraction of identical dimers\n";
     cout << "                               below a given threshold. (default: " << kmer_filter_threshold << ")\n";
     cout << "\n";
     cout << "SimiComp:\n";
