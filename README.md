@@ -12,7 +12,7 @@ CB-Search has the following build dependencies:
 ## Installation
 
 Release version can be downloaded from:
-[Release version v1.0.1](https://github.com/patryk-jarnot/nsc-search/releases/download/v1.0.1/nscsearch-1.0.1.tar.gz)
+[Release version v1.0.1](https://github.com/patryk-jarnot/cb-search/releases/download/v1.0.1/nscsearch-1.0.1.tar.gz)
 
 Then you can install CB-Search using the following commands:
 
