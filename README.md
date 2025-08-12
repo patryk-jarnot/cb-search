@@ -6,13 +6,20 @@ This method is designed for searching for similar motifs with non-standard compo
 
 CB-Search has the following build dependencies:
 * g++ 12.2.0 or later
+* make 4.4.1 or later
 * swig 4.0 or later
 * python library and header files python3-dev 3.11.2 or later
+
+Install dependencies on Ubuntu:
+
+```[bash]
+apt install g++ make swig python3-dev
+```
 
 ## Installation
 
 Release version can be downloaded from:
-[Release version v1.0.1](https://github.com/patryk-jarnot/cb-search/releases/download/v1.0.1/nscsearch-1.0.1.tar.gz)
+[Release version v1.0.2](https://github.com/patryk-jarnot/cb-search/releases/download/v1.0.2/cbsearch-1.0.2.tar.gz)
 
 Then you can install CB-Search using the following commands:
 

@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([cbsearch], [1.0.1], [patryk.jarnot@gmail.com])
+AC_INIT([cbsearch], [1.0.2], [patryk.jarnot@gmail.com])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([include/config-cbsearch.h])
 AC_CONFIG_AUX_DIR([build-aux])
