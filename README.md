@@ -1,4 +1,4 @@
-# CB-Search: Method for similarity analyses of motifs with non-standard amino acid compositions.
+# CB-Search: Method for similarity analyses of motifs with biased compositions.
 
 This method is designed for searching for similar motifs with non-standard compositions which include homopolymers, short tandem repeats, low complexity regions and compositionally biased regions.
 
@@ -96,6 +96,6 @@ cbsearch --help
 ```
 
 ## Links
-* [Patryk Jarnot Web Page](https://www.pjarnot.com)
+* [Patryk Jarnot Web Page](https://pjarnot.com)
 
 
