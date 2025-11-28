@@ -84,8 +84,12 @@ int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequ
 			}
 		}
 		else {
-			ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
-			search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
+			string query = iquery_sequence.get_sequence();
+			string hit = idatabase_sequence.get_sequence();
+			if (ikmer_filter->contain_similar_fragment(hit)) {
+				ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
+				search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
+			}
 		}
 
 	}
