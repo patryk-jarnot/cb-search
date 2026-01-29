@@ -12,7 +12,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "../include/method/nscsearch.hpp"
+#include "method/nscsearch.hpp"
 #include "method/options.hpp"
 #include "method/resultsoutput.hpp"
 

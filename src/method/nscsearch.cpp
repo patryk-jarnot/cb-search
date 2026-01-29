@@ -199,9 +199,9 @@ results_t NscSearch::scan_database(Sequence &iquery_sequence) {
 	kmer_filter.set_acceptance_threshold(opt->get_kmer_filter_threshold());
 	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence());
 
-	const int NUMBER_OF_THREADS_IN_WAITING_QUEUE = 20;
+	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 20;
 	while (database_reader->has_next_sequence()) {
-		while (thread_pool.get_tasks_count() > (NUMBER_OF_THREADS_IN_WAITING_QUEUE * thread_count)) std::this_thread::sleep_for(std::chrono::microseconds(500));
+		while (thread_pool.get_tasks_count() > (NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD * thread_count)) std::this_thread::sleep_for(std::chrono::microseconds(500));
 		Sequence ds = database_reader->get_next_sequence();
 		if (ds.get_sequence().length() == 0) {
 			continue;

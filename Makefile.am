@@ -4,9 +4,9 @@ AM_CXXFLAGS = -g -fpic -Wall -std=c++11 -I$(top_srcdir)/include -pthread
 AM_LDFLAGS =
 
 ACLOCAL_AMFLAGS = -I m4 --install
-all: libcbsearch.la cbsearch $(builddir)/cbsearch.py test
+all: libcbsearch.la cbsearch simicomp $(builddir)/cbsearch.py test
 
-bin_PROGRAMS = cbsearch testcbsearch
+bin_PROGRAMS = cbsearch simicomp testcbsearch
 
 
 lib_LTLIBRARIES = libcbsearch.la
@@ -91,6 +91,9 @@ EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
 
 cbsearch_SOURCES = src/main.cpp
 cbsearch_LDADD = libcbsearch.la
+
+simicomp_SOURCES = src/simicomp/main.cpp src/simicomp/options.cpp include/simicomp/options.hpp
+simicomp_LDADD = libcbsearch.la
 
 
 testcbsearch_SOURCES = src/tests/test.cpp \
