@@ -31,6 +31,17 @@ make install
 
 ## Development version compilation
 
+Development version of CB-Search has the following additional dependencies:
+* autoconf 2.72 or later
+* libtool 2.5.4 or later
+* autoconf-archive 20220903-3 or later
+
+Install dependencies on Ubuntu:
+
+```[bash]
+apt install autoconf libtool autoconf-archive
+```
+
 To download CB-Search source code use:
 
 ```[bash]
@@ -42,7 +53,6 @@ To build sources use:
 ```[bash]
 cd cb-search
 autoreconf -fi
-autoreconf -i
 mkdir build
 cd build
 INSTALLROOT=$PWD/../install-root
