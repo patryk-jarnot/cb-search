@@ -19,7 +19,7 @@ apt install g++ make swig python3-dev
 ## Installation
 
 Release version can be downloaded from:
-[Release version v1.0.2](https://github.com/patryk-jarnot/cb-search/releases/download/v1.0.2/cbsearch-1.0.2.tar.gz)
+[Release version v1.0.3](https://github.com/patryk-jarnot/cb-search/releases/download/v1.0.3/cbsearch-1.0.3.tar.gz)
 
 Then you can install CB-Search using the following commands:
 
