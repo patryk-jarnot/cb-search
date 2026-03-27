@@ -6,7 +6,7 @@
  */
 
 
-#include "simicomp/options.hpp"
+#include "method/simicomp/options.hpp"
 #include "config-cbsearch.h"
 
 #include "debug.hpp"

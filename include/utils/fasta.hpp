@@ -65,6 +65,7 @@ namespace fasta
 
 		bool has_next_sequence();
 		Sequence* read_next_sequence();
+		uint64_t tellg() { return input_stream->tellg(); }
 	};
 
 

@@ -6,18 +6,34 @@
  */
 
 #include "residue/scoringmatrix.hpp"
+#include "utils/stringutils.hpp"
 
 #include "debug.hpp"
 #include "exceptions.hpp"
 
 #include <stdexcept>
 #include <cstring>
+#include <string>
+#include <fstream>
+#include <algorithm>
 
 using namespace nscsearch;
+using namespace std;
+
+
+float ScoringMatrix::current_matrix_original[SCORING_MATRIX_SIZE * SCORING_MATRIX_SIZE] = {0};
+bool ScoringMatrix::is_current_matrix_loaded = false;
+std::string ScoringMatrix::custom_matrix_path = "";
 
 
 ScoringMatrix::ScoringMatrix() {
-	select(ScoringMatrix::Types::BLOSUM62);
+	if (is_current_matrix_loaded) {
+		memcpy(current_matrix, current_matrix_original, SCORING_MATRIX_SIZE*SCORING_MATRIX_SIZE*sizeof(float));
+	}
+	else {
+		select(ScoringMatrix::Types::BLOSUM62);
+	}
+	is_current_matrix_loaded = true;
 }
 
 
@@ -43,18 +59,57 @@ void ScoringMatrix::apply_cbr_correction(std::string iquery, float ialpha) {
 	memcpy(current_matrix, recalculator.get_matrix(), SCORING_MATRIX_SIZE*SCORING_MATRIX_SIZE*sizeof(float));
 }
 
+std::vector<char> read_header(std::string &line) {
+	vector<char> header;
+	vector<string> items = split_regex(line, "\\s+");
+	for (auto s : items) {
+		if (s.empty()) {
+			continue;
+		}
 
-void ScoringMatrix::select(ScoringMatrix::Types itype) {
-	switch (itype) {
-	case ScoringMatrix::Types::BLOSUM62:
-		memcpy(current_matrix, blosum62_matrix, SCORING_MATRIX_SIZE*SCORING_MATRIX_SIZE*sizeof(float));
-		break;
-	case ScoringMatrix::Types::CUSTOM:
-		throw NotImplemented(__FILE__, __LINE__);
+		header.push_back(s[0]);
+	}
+	return header;
+}
+
+void ScoringMatrix::read_custom_matrix() {
+	memset(current_matrix_original, 0, SCORING_MATRIX_SIZE*SCORING_MATRIX_SIZE*sizeof(float));
+
+	std::ifstream ifs(custom_matrix_path);
+	std::string line;
+	bool header_read = false;
+	vector<char> header;
+	while (std::getline(ifs, line)) {
+		if (line[0] == '#' || line.compare("") == 0) {
+			continue;
+		}
+		if (header_read == false) {
+			header = read_header(line);
+			header_read = true;
+		}
+		else {
+			vector<string> items = split_regex(line, "\\s+");
+			MatrixResidue row_residue = residue_to_matrix_index(items[0][0]);
+			for (int i=1; i<items.size(); i++) {
+				MatrixResidue col_residue = residue_to_matrix_index(header[i-1]);
+				current_matrix_original[(int)row_residue * SCORING_MATRIX_SIZE + (int)col_residue] = stof(items[i]);
+			}
+		}
 	}
 }
 
 
+void ScoringMatrix::select(ScoringMatrix::Types itype) {
+	switch (itype) {
+	case ScoringMatrix::Types::BLOSUM62:
+		memcpy(current_matrix_original, blosum62_matrix, SCORING_MATRIX_SIZE*SCORING_MATRIX_SIZE*sizeof(float));
+		break;
+	case ScoringMatrix::Types::CUSTOM:
+		read_custom_matrix();
+	}
+
+	memcpy(current_matrix, current_matrix_original, SCORING_MATRIX_SIZE*SCORING_MATRIX_SIZE*sizeof(float));
+}
 
 
 float nscsearch::blosum62_matrix[SCORING_MATRIX_SIZE * SCORING_MATRIX_SIZE] = {

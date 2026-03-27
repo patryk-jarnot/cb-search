@@ -4,9 +4,9 @@ AM_CXXFLAGS = -g -fpic -Wall -std=c++11 -I$(top_srcdir)/include -pthread
 AM_LDFLAGS =
 
 ACLOCAL_AMFLAGS = -I m4 --install
-all: libcbsearch.la cbsearch simicomp $(builddir)/cbsearch.py test
+all: libcbsearch.la cbsearch cbsearch-db simicomp $(builddir)/cbsearch.py test
 
-bin_PROGRAMS = cbsearch simicomp testcbsearch
+bin_PROGRAMS = cbsearch cbsearch-db simicomp testcbsearch
 
 
 lib_LTLIBRARIES = libcbsearch.la
@@ -48,6 +48,9 @@ libcbsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp \
 		include/filters/shortword.hpp src/filters/shortword.cpp \
 		include/filters/filterpipeline.hpp src/filters/filterpipeline.cpp \
 		include/filters/filterbase.hpp \
+		include/dal/cbdb/cbdbbase.hpp src/dal/cbdb/cbdbbase.cpp \
+		include/dal/cbdb/cbdbreader.hpp src/dal/cbdb/cbdbreader.cpp \
+		include/dal/cbdb/cbdbwriter.hpp src/dal/cbdb/cbdbwriter.cpp \
 		include/alignment/alignmentprinter.hpp src/alignment/alignmentprinter.cpp \
 		include/alignment/alignbase.hpp src/alignment/alignbase.cpp \
 		include/alignment/sw/swgapaffinitymatrices.hpp src/alignment/sw/swgapaffinitymatrices.cpp \
@@ -80,6 +83,8 @@ EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
                         src/tests/data/empty.txt \
                         src/tests/data/db_5_lcrs.fasta \
                         src/tests/data/output_1.txt \
+                        scoring_matrix/blosum62 \
+                        scoring_matrix/pam250 \
                         example/LICENSE \
                         example/Q01560.fasta \
                         example/database.fasta
@@ -92,7 +97,10 @@ EXTRA_DIST = src/tests/data/query_1_lcr.fasta \
 cbsearch_SOURCES = src/main.cpp
 cbsearch_LDADD = libcbsearch.la
 
-simicomp_SOURCES = src/simicomp/main.cpp src/simicomp/options.cpp include/simicomp/options.hpp
+cbsearch_db_SOURCES = src/method/cbsearch-db/main.cpp src/method/cbsearch-db/options.cpp include/method/cbsearch-db/options.hpp
+cbsearch_db_LDADD = libcbsearch.la
+
+simicomp_SOURCES = src/method/simicomp/main.cpp src/method/simicomp/options.cpp include/method/simicomp/options.hpp
 simicomp_LDADD = libcbsearch.la
 
 

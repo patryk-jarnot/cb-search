@@ -17,17 +17,21 @@
 using namespace nscsearch;
 
 
-void TestScoringMatrix::run() {
-	blosum62_check_matches();
-	blosum62_check_mismatches();
-	blosum62_check_mask_residues_diagonal();
 
-	residue_to_char_conversion_three_examples();
-	std::cout << "\n";
+void read_custom_scoring_matrix(std::string root_path) {
+	ScoringMatrix sm;
+	sm.set_custom_matrix_path(root_path + "/scoring_matrix/pam250");
+	sm.select(ScoringMatrix::Types::CUSTOM);
+
+	ASSERT(sm.get_score('C', 'P') == -3);
+	ASSERT(sm.get_score('C', 'C') == 12);
+
+	sm.select(ScoringMatrix::Types::BLOSUM62);
 }
 
 
-void TestScoringMatrix::blosum62_check_matches() {
+
+void blosum62_check_matches() {
 	ScoringMatrix sm;
 	sm.select(ScoringMatrix::Types::BLOSUM62);
 
@@ -42,7 +46,7 @@ void TestScoringMatrix::blosum62_check_matches() {
 }
 
 
-void TestScoringMatrix::blosum62_check_mismatches() {
+void blosum62_check_mismatches() {
 	ScoringMatrix sm;
 	sm.select(ScoringMatrix::Types::BLOSUM62);
 
@@ -54,7 +58,7 @@ void TestScoringMatrix::blosum62_check_mismatches() {
 }
 
 
-void TestScoringMatrix::blosum62_check_mask_residues_diagonal() {
+void blosum62_check_mask_residues_diagonal() {
 	ScoringMatrix sm;
 	sm.select(ScoringMatrix::Types::BLOSUM62);
 	sm.mask_residues_except_diagonal({'R', 'P'}, 0);
@@ -70,13 +74,24 @@ void TestScoringMatrix::blosum62_check_mask_residues_diagonal() {
 }
 
 
-void TestScoringMatrix::residue_to_char_conversion_three_examples() {
+void residue_to_char_conversion_three_examples() {
 	ASSERT(residue_to_char(MatrixResidue::A) == 'A');
 	ASSERT(residue_to_char(MatrixResidue::X) == 'X');
 	ASSERT(residue_to_char(MatrixResidue::Q) == 'Q');
 }
 
 
+void TestScoringMatrix::run(std::string root_path) {
+	blosum62_check_matches();
+	blosum62_check_mismatches();
+	blosum62_check_mask_residues_diagonal();
+
+	residue_to_char_conversion_three_examples();
+
+	read_custom_scoring_matrix(root_path);
+
+	std::cout << "\n";
+}
 
 
 

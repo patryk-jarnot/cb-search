@@ -27,14 +27,20 @@ namespace nscsearch {
 		float get_score(char a, char b);
 		float get_score(MatrixResidue a, MatrixResidue b);
 		void select(ScoringMatrix::Types itype);
+		void read_custom_matrix();
 		void mask_residues_except_diagonal(std::vector<char> iresidues, float imask_value);
 		void apply_cbr_correction(std::string iquery, float ialpha);
+		static void set_custom_matrix_path(std::string ipath) { custom_matrix_path = ipath; }
 
 	private:
 		void select_blosum62();
 
 		float current_matrix[SCORING_MATRIX_SIZE * SCORING_MATRIX_SIZE];
 		MatrixRecalculator recalculator;
+
+		static std::string custom_matrix_path;
+		static float current_matrix_original[SCORING_MATRIX_SIZE * SCORING_MATRIX_SIZE];
+		static bool is_current_matrix_loaded;
 
 	};
 

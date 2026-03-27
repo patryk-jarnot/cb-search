@@ -22,7 +22,6 @@ class OptionsSc
 {
 public:
 	OptionsSc() : limit(500), thread_count(1), debug_level(0), similarity_threshold(0.7), relative_threshold(0.1) {
-		std::cout << "test\n";
 	}
 	virtual ~OptionsSc() {}
 

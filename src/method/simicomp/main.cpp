@@ -4,7 +4,7 @@
  *  Created on: Jan 29, 2026
  *      Author: pjarnot
  */
-#include "simicomp/options.hpp"
+#include "method/simicomp/options.hpp"
 #include "identification/simicomp.hpp"
 #include "debug.hpp"
 #include "dal/sequencereaderfasta.hpp"

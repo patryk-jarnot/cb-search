@@ -8,18 +8,15 @@
 #ifndef NSCSEARCH_INCLUDE_TESTS_TESTSCORINGMATRIX_HPP_
 #define NSCSEARCH_INCLUDE_TESTS_TESTSCORINGMATRIX_HPP_
 
+#include <string>
+
 namespace nscsearch {
 
 	class TestScoringMatrix {
 	public:
-		void run();
+		void run(std::string root_path);
 
 	private:
-		void blosum62_check_matches();
-		void blosum62_check_mismatches();
-		void blosum62_check_mask_residues_diagonal();
-
-		void residue_to_char_conversion_three_examples();
 	};
 
 }

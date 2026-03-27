@@ -8,6 +8,7 @@
 
 #include "method/options.hpp"
 #include "config-cbsearch.h"
+#include "residue/scoringmatrix.hpp"
 
 #include "debug.hpp"
 
@@ -61,6 +62,7 @@ void Options::show_help() {
     cout << "      --gap-extend=FLOAT     Gap extension cost. (default: " << gap_extension << ")\n";
     cout << "      --kmer-filter=FLOAT    Filter out sequences with fraction of identical dimers\n";
     cout << "                               below a given threshold. (default: " << kmer_filter_threshold << ")\n";
+    cout << "  -m, --matrix=FILE          Path to custom scoring matrix.\n";
     cout << "\n";
     cout << "SimiComp:\n";
     cout << "      --simi-comp            If set, the method will search for compositionally\n";
@@ -104,6 +106,8 @@ int Options::parse_general_options(int argc, char **argv) {
             {"output-file",     required_argument, 0,  'o' },
             {"threshold",     required_argument, 0,  't' },
             {"sort",     required_argument, 0,  's' },
+            {"limit",     required_argument, 0,  'l' },
+            {"matrix",     required_argument, 0,  'm' },
             {"align",     required_argument, 0,  'a' },
             {"output-format",     required_argument, 0,  'f' },
             {"threads",     required_argument, 0,  0 },
@@ -121,7 +125,7 @@ int Options::parse_general_options(int argc, char **argv) {
             {0,         0,                 0,  0 }
         };
 
-		c = getopt_long(argc, argv, "q:d:o:t:s:a:l:f:",
+		c = getopt_long(argc, argv, "q:d:o:t:s:a:l:f:m:",
                  long_options, &option_index);
 
         if (c == -1)
@@ -206,6 +210,14 @@ int Options::parse_general_options(int argc, char **argv) {
        case 'f':
             output_format = static_cast<OutputFormat>(atoi(optarg));
             break;
+
+       case 'm':
+		   {
+				ScoringMatrix m;
+				m.set_custom_matrix_path(optarg);
+				m.select(ScoringMatrix::Types::CUSTOM);
+		   }
+           break;
 
        case '?':
             break;

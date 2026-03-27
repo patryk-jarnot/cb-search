@@ -10,6 +10,10 @@
 #include "debug.hpp"
 
 #include <map>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <regex>
 
 //using namespace nscsearch;
 using namespace std;
@@ -104,6 +108,64 @@ namespace nscsearch {
 
 		return retval;
 	}
+
+	std::vector<std::string> split(std::string s, const std::string& delimiter) {
+		std::vector<std::string> tokens;
+		size_t pos = 0;
+		std::string token;
+		while ((pos = s.find(delimiter)) != std::string::npos) {
+			token = s.substr(0, pos);
+			tokens.push_back(token);
+			s.erase(0, pos + delimiter.length());
+		}
+		tokens.push_back(s);
+
+		return tokens;
+	}
+
+	std::vector<std::string> split_regex(std::string &s, const std::string& delimiter) {
+		std::vector<std::string> items;
+//		std::regex rgx("\\s+");
+		std::regex rgx(delimiter);
+		std::sregex_token_iterator iter(s.begin(), s.end(), rgx, -1);
+		std::sregex_token_iterator end;
+		for ( ; iter != end; ++iter)
+			items.push_back(*iter);
+		return items;
+	}
+
+	void ltrim(std::string &s) {
+		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+			return !std::isspace(ch);
+		}));
+	}
+
+	void rtrim(std::string &s) {
+		s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+			return !std::isspace(ch);
+		}).base(), s.end());
+	}
+
+	void trim(std::string &s) {
+		rtrim(s);
+		ltrim(s);
+	}
+
+	std::string ltrim_copy(std::string s) {
+		ltrim(s);
+		return s;
+	}
+
+	std::string rtrim_copy(std::string s) {
+		rtrim(s);
+		return s;
+	}
+
+	std::string trim_copy(std::string s) {
+		trim(s);
+		return s;
+	}
+
 }
 
 

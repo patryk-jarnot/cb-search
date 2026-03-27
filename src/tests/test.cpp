@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
     tmr.run();
 
     TestScoringMatrix tsm;
-    tsm.run();
+    tsm.run(root_path);
 
     TestNeedlemanWunsch tnw;
     tnw.run();
