@@ -7,8 +7,13 @@
 
 #include "method/cbsearch-db/options.hpp"
 #include "dal/cbdb/cbdbwriter.hpp"
+#include "dal/cbdb/cbdbreader.hpp"
+#include "model/sequence.hpp"
+
+#include "debug.hpp"
 
 #include <iostream>
+#include <vector>
 
 
 using namespace std;
@@ -57,8 +62,25 @@ int main(int argc, char **argv) {
 
 		CbDbWriter writer;
 		writer.set_handlers(input, output_mers, output_idx);
-		writer.initialize_file();
-		writer.fill_the_file();
+		writer.create_files();
+
+		input->clear();
+		input->seekg(0);
+		output_mers->clear();
+		output_mers->seekg(0);
+		output_idx->clear();
+		output_idx->seekg(0);
+		CbDbReader reader;
+		reader.set_handlers(input, output_mers, output_idx);
+		reader.load_database();
+		map<uint16_t, int> count_by_kmer;
+		count_by_kmer[0x4141] = 10;
+		vector<Sequence> seqs = reader.get_seqeunces(&count_by_kmer, 0.3);
+		DEBUG("sequence count: " << seqs.size());
+//		for (auto seq : seqs) {
+//			cout << "Header: " << seq.get_header() << "\n";
+//			cout << "Sequence: " << seq.get_sequence() << "\n";
+//		}
 	}
 	catch (std::logic_error &e) {
 		cerr << e.what();

@@ -21,13 +21,13 @@ namespace nscsearch {
 	public:
 		SequenceReaderStub();
 		virtual ~SequenceReaderStub();
-		void add_sequence(Sequence isequence);
+		void add_sequence(cbsearch::Sequence isequence);
 
 		virtual bool has_next_sequence();
-		virtual Sequence get_next_sequence();
+		virtual cbsearch::Sequence get_next_sequence();
 
 	private:
-		std::vector<Sequence> sequences;
+		std::vector<cbsearch::Sequence> sequences;
 		int index;
 
 	};

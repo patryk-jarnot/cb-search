@@ -9,7 +9,7 @@
 #include "model/sequence.hpp"
 
 
-namespace nscsearch {
+namespace cbsearch {
 	Sequence::Sequence(std::string iheader, std::string isequence) {
 		header = iheader;
 		sequence = isequence;

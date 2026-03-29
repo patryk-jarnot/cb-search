@@ -20,6 +20,7 @@ Sequence FastaReader::read_sequence()
 {
 	Sequence retval;
 	std::getline(*input_stream, retval.header);
+	cur_pos += retval.header.length() + 1;
 	if (retval.header.length() == 0 || retval.header[0] != '>')
 	{
 		throw "invalid header";
@@ -29,6 +30,7 @@ Sequence FastaReader::read_sequence()
 	{
 		std::string tmp;
 		std::getline(*input_stream, tmp);
+		cur_pos += tmp.length() + 1;
 
 		retval.sequence += tmp;
 	}
@@ -41,6 +43,7 @@ Sequence* FastaReader::read_sequence_ptr()
 {
 	Sequence *retval = new Sequence();
 	std::getline(*input_stream, retval->header);
+	cur_pos += retval->header.length() + 1;
 	if (retval->header.length() == 0 || retval->header[0] != '>')
 	{
 		throw "invalid header";
@@ -50,6 +53,7 @@ Sequence* FastaReader::read_sequence_ptr()
 	{
 		std::string tmp;
 		std::getline(*input_stream, tmp);
+		cur_pos += tmp.length() + 1;
 
 		retval->sequence += tmp;
 	}
@@ -59,17 +63,17 @@ Sequence* FastaReader::read_sequence_ptr()
 }
 
 
-FastaReader::FastaReader() : initialized_stream(false), input_stream(nullptr)
+FastaReader::FastaReader() : initialized_stream(false), input_stream(nullptr), cur_pos(0)
 {
 }
 
-FastaReader::FastaReader(istream *istream) : initialized_stream(false)
+FastaReader::FastaReader(istream *istream) : initialized_stream(false), cur_pos(0)
 {
 	input_stream = istream;
 }
 
 
-FastaReader::FastaReader(std::string ifileName) : initialized_stream(true)
+FastaReader::FastaReader(std::string ifileName) : initialized_stream(true), cur_pos(0)
 {
 	open_file(ifileName);
 }
@@ -77,11 +81,15 @@ FastaReader::FastaReader(std::string ifileName) : initialized_stream(true)
 
 void FastaReader::open_file(std::istream *istream) {
 	input_stream = istream;
+	initialized_stream = false;
+	cur_pos = 0;
 }
 
 
 void FastaReader::open_file(std::string ifile_name) {
 	input_stream = new ifstream(ifile_name);
+	initialized_stream = true;
+	cur_pos = 0;
 }
 
 

@@ -19,7 +19,7 @@ namespace nscsearch {
 	public:
 		virtual ~SequenceReader() {};
 		virtual bool has_next_sequence() = 0;
-		virtual Sequence get_next_sequence() = 0;
+		virtual cbsearch::Sequence get_next_sequence() = 0;
 	private:
 
 	};

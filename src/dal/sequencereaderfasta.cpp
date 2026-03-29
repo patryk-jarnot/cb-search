@@ -11,6 +11,7 @@
 
 #include "model/sequence.hpp"
 
+using namespace cbsearch;
 
 namespace nscsearch {
 

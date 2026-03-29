@@ -26,6 +26,7 @@
 //#include "identification/frequencyidentificator.hpp"
 
 using namespace nscsearch;
+using namespace cbsearch;
 using namespace std;
 
 

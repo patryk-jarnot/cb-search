@@ -9,6 +9,7 @@
 #include "utils/fasta.hpp"
 #include "debug.hpp"
 
+
 using namespace cbsearch;
 using namespace std;
 
@@ -23,6 +24,8 @@ void CbDbWriter::set_handlers(std::ifstream *input, std::fstream *output_mers, s
 map<uint16_t, int> calculate_kmers(string *sequence) {
 	map<uint16_t, int> kmers;
 	for (size_t i=0; i<sequence->size()-1; i++) {
+//	for (auto it=sequence->begin(); it<sequence->end()-1; it++) {
+//		uint16_t kmer = ((uint16_t)*it << 8) | (uint16_t)*(it+1);
 		uint16_t kmer = ((uint16_t)(*sequence)[i] << 8) | (uint16_t)(*sequence)[i+1];
 		if (kmers.find(kmer) == kmers.end()) {
 			kmers[kmer] = 1;
@@ -35,16 +38,13 @@ map<uint16_t, int> calculate_kmers(string *sequence) {
 }
 
 
-void initialize_stats_parse_seq(map<uint16_t, map<int, int> > *init_stats, string *sequence) {
+void initialize_stats_parse_seq(map<uint16_t, map<uint16_t, list<uint32_t> > > *init_stats, string *sequence, uint32_t seq_id) {
 	map<uint16_t, int> kmers = calculate_kmers(sequence);
 	for (auto it : kmers) {
 		if (init_stats->find(it.first) == init_stats->end()) {
-			(*init_stats)[it.first] = map<int, int>();
-			(*init_stats)[it.first][it.second] = 1;
+			(*init_stats)[it.first] = map<uint16_t, list<uint32_t> >();
 		}
-		else {
-			(*init_stats)[it.first][it.second]++;
-		}
+		(*init_stats)[it.first][it.second].push_back(seq_id);
 	}
 }
 
@@ -57,7 +57,7 @@ void write_seq_idx(fstream *fidx, uint32_t seq_id, uint64_t beg_pos, uint16_t le
 }
 
 
-void initialize_stats(ifstream *ifs, fstream *fidx, map<uint16_t, map<int, int> > *init_stats) {
+void initialize_stats(ifstream *ifs, fstream *fidx, map<uint16_t, map<uint16_t, list<uint32_t> > > *init_stats) {
 	ifs->seekg(0);
 	fasta::FastaReader fasta_reader;
 	fasta_reader.open_file(ifs);
@@ -65,82 +65,39 @@ void initialize_stats(ifstream *ifs, fstream *fidx, map<uint16_t, map<int, int> 
 	uint32_t len = 0;
 	uint32_t seq_id = 1;
 	while (fasta_reader.has_next_sequence()) {
+		fasta::Sequence *fasta_seq = fasta_reader.read_next_sequence();
 		len = fasta_reader.tellg() - beg_pos;
-		fasta::Sequence *fasta_seq = fasta_reader.read_next_sequence();
 		write_seq_idx(fidx, seq_id, beg_pos, len);
-		initialize_stats_parse_seq(init_stats, &(fasta_seq->sequence));
+		initialize_stats_parse_seq(init_stats, &(fasta_seq->sequence), seq_id);
 		seq_id++;
+		beg_pos = fasta_reader.tellg();
 	}
 }
 
-
-void CbDbWriter::initialize_file() {
+// std::map<uint16_t, std::map<uint16_t, std::list<uint32_t> > > elements;
+void CbDbWriter::create_files() {
 	DEBUG(".");
-	initialize_stats(file_fasta, file_idx, &init_stats);
+	initialize_stats(file_fasta, file_idx, &elements);
 	DEBUG(".");
-	for (auto kmers : (init_stats)) {
-//		*file_kmers << kmers.first[0] << kmers.first[1] << (uint16_t)kmers.second.size();
+	for (auto count_by_kmer : (elements)) {
 
-		uint16_t len = (uint16_t)kmers.second.size();
-		uint16_t kmer = kmers.first;
-
-//		file_kmers->write(&(kmers.first[0]), sizeof(char));
-//		file_kmers->write(&(kmers.first[1]), sizeof(char));
+		uint16_t kmer = count_by_kmer.first;
 		file_kmers->write(reinterpret_cast<char*>(&kmer), sizeof(kmer));
-		file_kmers->write(reinterpret_cast<char*> (&len), sizeof(len));
-	}
 
-	DEBUG(".");
-	uint64_t id_pos = file_kmers->tellp();
-	for (auto kmers : (init_stats)) {
-		for (auto seqc_by_kmerc : kmers.second) {
-			id_pos += sizeof(uint16_t) + sizeof(uint64_t);
+		uint16_t count_size = count_by_kmer.second.size();
+		file_kmers->write(reinterpret_cast<char*> (&count_size), sizeof(count_size));
+
+		for (auto ids_by_count: count_by_kmer.second) {
+			uint16_t count = (uint16_t)ids_by_count.first;
+			file_kmers->write(reinterpret_cast<char*> (&count), sizeof(count));
+			uint32_t id_size = ids_by_count.second.size();
+			file_kmers->write(reinterpret_cast<char*> (&id_size), sizeof(id_size));
+
+			for (auto id : ids_by_count.second) {
+				uint32_t id_seq = id;
+				file_kmers->write(reinterpret_cast<char*> (&id_seq), sizeof(id_seq));
+			}
 		}
-	}
-
-	DEBUG(".");
-	for (auto kmers : (init_stats)) {
-		for (auto seqc_by_kmerc : kmers.second) {
-			uint32_t key = (((uint32_t)(kmers.first) << 16) | seqc_by_kmerc.first);
-			uint16_t kmerc = (uint16_t)seqc_by_kmerc.first;
-			file_kmers->write(reinterpret_cast<char*>(&kmerc), sizeof(kmerc));
-			file_kmers->write(reinterpret_cast<char*>(&id_pos), sizeof(id_pos));
-
-			pos_by_kmer_and_quantity[key] = id_pos;
-			id_pos += seqc_by_kmerc.second * sizeof(uint64_t);
-		}
-	}
-	uint64_t zero = 0;
-	for (uint64_t i=file_kmers->tellg(); i<=id_pos; i+=sizeof(zero)) {
-		file_kmers->write(reinterpret_cast<char*> (&zero), sizeof(zero));
-	}
-	DEBUG(".");
-}
-
-
-void fill_the_file_parse_seq(uint32_t seq_id, string *sequence, fstream *file_kmers, std::map<uint32_t, uint64_t> *pos_by_kmer_and_quantity) {
-	map<uint16_t, int> kmers = calculate_kmers(sequence);
-
-	for (auto kmer : kmers) {
-		uint32_t key = (((uint32_t)(kmer.first) << 16) | kmer.second);
-		file_kmers->seekp((*pos_by_kmer_and_quantity)[key]);
-//		*file_kmers << seq_id;
-		file_kmers->write(reinterpret_cast<char*> (&seq_id), sizeof(seq_id));
-		(*pos_by_kmer_and_quantity)[key] += sizeof(seq_id);
-	}
-}
-
-
-void CbDbWriter::fill_the_file() {
-	file_fasta->seekg(0);
-	fasta::FastaReader fasta_reader;
-	fasta_reader.open_file(dynamic_cast<istream*>(file_fasta));
-
-	uint32_t seq_id = 1;
-	while (fasta_reader.has_next_sequence()) {
-		fasta::Sequence *fasta_seq = fasta_reader.read_next_sequence();
-		fill_the_file_parse_seq(seq_id, &(fasta_seq->sequence), file_kmers, &pos_by_kmer_and_quantity);
-		seq_id++;
 	}
 }
 

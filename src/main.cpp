@@ -17,6 +17,7 @@
 #include "method/resultsoutput.hpp"
 
 using namespace nscsearch;
+using namespace cbsearch;
 using namespace std;
 
 

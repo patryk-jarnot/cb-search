@@ -11,7 +11,7 @@
 #include <string>
 
 
-namespace nscsearch {
+namespace cbsearch {
 	class Sequence {
 	public:
 		Sequence(std::string iheader, std::string isequence);

@@ -31,7 +31,7 @@ namespace nscsearch {
 //		void scan_queries_and_database_threads(std::istream *query_stream, int ithread_count);
 //		void scan_database(fasta::Sequence* iquery_sequence, ThreadPool *ithread_pool, int ithread_count);
 
-		results_t scan_database(Sequence &iquery_sequence);
+		results_t scan_database(cbsearch::Sequence &iquery_sequence);
 //		void save_reported_record(std::string iquery, std::string imidline, std::string ihit_header, std::string ihit_sequence, int score, float identity, float similarity);
 
 		void save_reported_record(std::string iquery, std::string imidline, std::string ihit_header,

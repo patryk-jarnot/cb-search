@@ -11,6 +11,7 @@
 #include "dal/sequencereaderstub.hpp"
 #include "model/sequence.hpp"
 
+using namespace cbsearch;
 
 namespace nscsearch {
 

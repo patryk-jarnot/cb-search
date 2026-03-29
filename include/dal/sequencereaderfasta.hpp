@@ -24,7 +24,7 @@ namespace nscsearch {
 		SequenceReaderFasta(std::string ifile_name);
 		virtual ~SequenceReaderFasta();
 		virtual bool has_next_sequence();
-		virtual Sequence get_next_sequence();
+		virtual cbsearch::Sequence get_next_sequence();
 		virtual void open_file(std::string ipath);
 		virtual void open_file(std::istream *istream);
 

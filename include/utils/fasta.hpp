@@ -50,6 +50,7 @@ namespace fasta
 		Sequence read_sequence();
 		Sequence* read_sequence_ptr();
 		std::string read_acc(std::string header);
+		size_t cur_pos;
 	protected:
 	public:
 		FastaReader();
@@ -65,7 +66,8 @@ namespace fasta
 
 		bool has_next_sequence();
 		Sequence* read_next_sequence();
-		uint64_t tellg() { return input_stream->tellg(); }
+//		uint64_t tellg() { return input_stream->tellg(); }
+		uint64_t tellg() { return cur_pos; }
 	};
 
 
