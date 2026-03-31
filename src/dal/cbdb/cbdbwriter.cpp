@@ -7,6 +7,7 @@
 
 #include "dal/cbdb/cbdbwriter.hpp"
 #include "utils/fasta.hpp"
+#include "utils/sequenceutils.hpp"
 #include "debug.hpp"
 
 
@@ -21,25 +22,8 @@ void CbDbWriter::set_handlers(std::ifstream *input, std::fstream *output_mers, s
 }
 
 
-map<uint16_t, int> calculate_kmers(string *sequence) {
-	map<uint16_t, int> kmers;
-	for (size_t i=0; i<sequence->size()-1; i++) {
-//	for (auto it=sequence->begin(); it<sequence->end()-1; it++) {
-//		uint16_t kmer = ((uint16_t)*it << 8) | (uint16_t)*(it+1);
-		uint16_t kmer = ((uint16_t)(*sequence)[i] << 8) | (uint16_t)(*sequence)[i+1];
-		if (kmers.find(kmer) == kmers.end()) {
-			kmers[kmer] = 1;
-		}
-		else {
-			kmers[kmer]++;
-		}
-	}
-	return kmers;
-}
-
-
 void initialize_stats_parse_seq(map<uint16_t, map<uint16_t, list<uint32_t> > > *init_stats, string *sequence, uint32_t seq_id) {
-	map<uint16_t, int> kmers = calculate_kmers(sequence);
+	map<uint16_t, int> kmers = count_kmers(sequence);
 	for (auto it : kmers) {
 		if (init_stats->find(it.first) == init_stats->end()) {
 			(*init_stats)[it.first] = map<uint16_t, list<uint32_t> >();
@@ -76,9 +60,9 @@ void initialize_stats(ifstream *ifs, fstream *fidx, map<uint16_t, map<uint16_t, 
 
 // std::map<uint16_t, std::map<uint16_t, std::list<uint32_t> > > elements;
 void CbDbWriter::create_files() {
-	DEBUG(".");
+//	DEBUG(".");
 	initialize_stats(file_fasta, file_idx, &elements);
-	DEBUG(".");
+//	DEBUG(".");
 	for (auto count_by_kmer : (elements)) {
 
 		uint16_t kmer = count_by_kmer.first;

@@ -32,6 +32,7 @@ libcbsearch_la_SOURCES = include/method/nscsearch.hpp src/method/nscsearch.cpp \
 		include/utils/stringutils.hpp src/utils/stringutils.cpp \
 		include/utils/fileutils.hpp src/utils/fileutils.cpp \
 		include/utils/functionutils.hpp src/utils/functionutils.cpp \
+		include/utils/sequenceutils.hpp src/utils/sequenceutils.cpp \
 		include/utils/numericutils.hpp src/utils/numericutils.cpp \
 		include/residue/scoringmatrix.hpp src/residue/scoringmatrix.cpp \
 		include/residue/matrixrecalculator.hpp src/residue/matrixrecalculator.cpp \

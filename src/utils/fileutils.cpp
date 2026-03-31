@@ -27,6 +27,11 @@ namespace nscsearch {
 		return buffer.str();
 	}
 
+	bool file_exists(string path) {
+		ifstream ifs(path);
+		return ifs.good();
+	}
+
 }
 
 

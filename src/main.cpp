@@ -15,6 +15,7 @@
 #include "method/nscsearch.hpp"
 #include "method/options.hpp"
 #include "method/resultsoutput.hpp"
+#include "utils/fileutils.hpp"
 
 using namespace nscsearch;
 using namespace cbsearch;

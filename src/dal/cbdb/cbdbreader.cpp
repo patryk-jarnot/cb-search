@@ -7,6 +7,7 @@
 
 #include "dal/cbdb/cbdbreader.hpp"
 #include "model/sequence.hpp"
+#include "utils/sequenceutils.hpp"
 
 #include "debug.hpp"
 
@@ -109,11 +110,62 @@ cbsearch::Sequence parse_sequence(string seq_fasta) {
 	string header = seq_fasta.substr(0, nl_it);
 	string sequence = string(seq_fasta.begin() + nl_it+1, seq_fasta.end());
 	sequence.erase(std::remove(sequence.begin(), sequence.end(), '\n'), sequence.end());
-	DEBUG(header)
-	DEBUG(sequence)
+//	DEBUG(header)
+//	DEBUG(sequence)
 	return cbsearch::Sequence(header, sequence);
 }
 
+void CbDbReader::find_seqeunces(std::string *isequence, float threshold) {
+	std::map<uint16_t, int> kmers = count_kmers(isequence);
+	dimer_threshold = threshold;
+	total_kmers = 0;
+	for (auto kmer_count : kmers) {
+		total_kmers += kmer_count.second;
+	}
+
+	int current_count = 0;
+	count_by_id = map<uint32_t, uint32_t>();
+	for (auto kmer_count : kmers) {
+		current_count += kmer_count.second;
+		for (int i=kmer_count.second; i>0; i--) {
+			for (auto prot_id : elements[kmer_count.first][i]) {
+				if (count_by_id.find(prot_id) == count_by_id.end() && ((1.0-(float)current_count/total_kmers) < threshold)) {
+					count_by_id[prot_id] = i;
+				}
+				else if (((1.0-(float)current_count/total_kmers) + ((float)count_by_id[prot_id]/total_kmers)) > threshold) {
+					auto it = count_by_id.find(prot_id);
+					count_by_id.erase(it);
+				}
+				else {
+					count_by_id[prot_id] += i;
+				}
+			}
+		}
+	}
+	count_by_id_iterator = count_by_id.begin();
+}
+
+Sequence CbDbReader::get_next_sequence() {
+	while (count_by_id_iterator != count_by_id.end()) {
+		if (((float)(*count_by_id_iterator).second/total_kmers) > dimer_threshold) {
+			db_index_val_t loc = location_by_idx[(*count_by_id_iterator).first];
+			string seq(loc.len, '.');
+			file_fasta->seekg(loc.pos, file_fasta->beg);
+			file_fasta->read(&(seq[0]), loc.len);
+			count_by_id_iterator++;
+			return parse_sequence(seq);
+		}
+		else {
+			count_by_id_iterator++;
+		}
+	}
+	return Sequence("", "");
+}
+
+std::vector<Sequence> CbDbReader::get_seqeunces(std::string *isequence, float threshold) {
+	std::map<uint16_t, int> kmers = count_kmers(isequence);
+	return get_seqeunces(&kmers, threshold);
+}
 
 std::vector<Sequence> CbDbReader::get_seqeunces(std::map<uint16_t, int> *kmers, float threshold) {
 	int total_kmers = 0;
@@ -124,8 +176,8 @@ std::vector<Sequence> CbDbReader::get_seqeunces(std::map<uint16_t, int> *kmers, 
 	int current_count = 0;
 	map<uint32_t, uint32_t> count_by_id;
 	for (auto kmer_count : *kmers) {
-		DEBUG("kmer: " << (char)(kmer_count.first >> 8) << (char)kmer_count.first);
-		DEBUG("count: " << kmer_count.second);
+//		DEBUG("kmer: " << (char)(kmer_count.first >> 8) << (char)kmer_count.first);
+//		DEBUG("count: " << kmer_count.second);
 		current_count += kmer_count.second;
 		for (int i=kmer_count.second; i>0; i--) {
 			for (auto prot_id : elements[kmer_count.first][i]) {
@@ -146,7 +198,7 @@ std::vector<Sequence> CbDbReader::get_seqeunces(std::map<uint16_t, int> *kmers, 
 	for (auto id_count : count_by_id) {
 		if (((float)id_count.second/total_kmers) > threshold) {
 			db_index_val_t loc = location_by_idx[id_count.first];
-			DEBUG("id: " << id_count.first << ", pos: " << loc.pos << ", len: " << loc.len);
+//			DEBUG("id: " << id_count.first << ", pos: " << loc.pos << ", len: " << loc.len);
 			string seq(loc.len, '.');
 			file_fasta->seekg(loc.pos, file_fasta->beg);
 			file_fasta->read(&(seq[0]), loc.len);
@@ -156,3 +208,20 @@ std::vector<Sequence> CbDbReader::get_seqeunces(std::map<uint16_t, int> *kmers, 
 	return sequences;
 }
 
+CbDbReader::~CbDbReader() {
+	if (files_opened) {
+		file_fasta->close();
+		file_kmers->close();
+		file_idx->close();
+		delete file_fasta;
+		delete file_kmers;
+		delete file_idx;
+	}
+}
+
+void CbDbReader::open_files(std::string idb_path) {
+	file_fasta = new ifstream(idb_path);
+	file_kmers = new fstream(idb_path + string(".cbm"));
+	file_idx = new fstream(idb_path + string(".cbi"));
+	files_opened = true;
+}

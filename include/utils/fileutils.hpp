@@ -14,6 +14,7 @@
 
 namespace nscsearch {
 	std::string read_file(std::string const& ifile_path);
+	bool file_exists(std::string path);
 }
 
 

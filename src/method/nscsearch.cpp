@@ -5,6 +5,7 @@
  *      Author: pjarnot
  */
 
+#include "dal/cbdb/cbdbreader.hpp"
 #include "alignment/nw/needlemanwunsch.hpp"
 #include "alignment/og/onewayglobal.hpp"
 #include "alignment/sw/smithwaterman.hpp"
@@ -200,10 +201,65 @@ results_t NscSearch::scan_database(Sequence &iquery_sequence) {
 	kmer_filter.set_acceptance_threshold(opt->get_kmer_filter_threshold());
 	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence());
 
-	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 20;
+	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 10;
 	while (database_reader->has_next_sequence()) {
-		while (thread_pool.get_tasks_count() > (NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD * thread_count)) std::this_thread::sleep_for(std::chrono::microseconds(500));
+		while (thread_pool.get_tasks_count() > (NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD * thread_count)) std::this_thread::sleep_for(std::chrono::microseconds(100));
 		Sequence ds = database_reader->get_next_sequence();
+		if (ds.get_sequence().length() == 0) {
+			continue;
+		}
+
+		float longer_length = max(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
+		float shorter_length = min(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
+//		if ((shorter_length != 0) && ((longer_length / shorter_length) < 2)) {
+//			if (nscsearch::jaccard_index(iquery_sequence.get_sequence_ptr(), ds.get_sequence_ptr()) > 0.5) {
+				if (thread_count > 1) {
+					std::future<int> x = thread_pool.enqueue(scan_fasta_thread, thread_pool.get_worker_ids(), this, iquery_sequence, ds, opt, &abs, &kmer_filter);//, opt->get_gap_open(), opt->get_gap_extension());
+				} else {
+					scan_fasta_thread(nullptr, this, iquery_sequence, ds, opt, &abs, &kmer_filter); //, opt->get_gap_open(), opt->get_gap_extension());
+				}
+//			}
+//		}
+	}
+
+	while (thread_pool.get_tasks_count() > 0) std::this_thread::sleep_for(std::chrono::microseconds(500));
+
+	thread_pool.dispose();
+
+	delete_alignment_algorithms(opt, abs);
+
+	return results;
+}
+
+
+results_t NscSearch::scan_database_idx(Sequence &iquery_sequence) {
+	assert(database_reader != nullptr);  // You have to call different constructor
+
+	int thread_count = opt->get_thread_count();
+
+	ThreadPool thread_pool(thread_count);
+
+	if (thread_count < 2) {
+		thread_count = 1;
+	}
+
+	vector<AlignBase*> abs = setup_alignment_algorithms(opt, iquery_sequence);
+	KmerFilter kmer_filter;
+	kmer_filter.set_acceptance_threshold(opt->get_kmer_filter_threshold());
+	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence());
+
+	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 10;
+
+	CbDbReader reader;
+//	reader.set_handlers(input, output_mers, output_idx);
+	reader.open_files(opt->get_database_file_path());
+	reader.load_database();
+//	map<uint16_t, int> count_by_kmer = count_kmers(iquery_sequence);
+//	vector<Sequence> db_seqs = reader.get_seqeunces(iquery_sequence.get_sequence_ptr(), 0.3);
+	reader.find_seqeunces(iquery_sequence.get_sequence_ptr(), opt->get_kmer_filter_threshold());
+
+	while (reader.has_next_sequence()) {
+		Sequence ds = reader.get_next_sequence();
 		if (ds.get_sequence().length() == 0) {
 			continue;
 		}
