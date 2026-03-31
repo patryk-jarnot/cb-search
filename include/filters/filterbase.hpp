@@ -23,7 +23,7 @@ namespace nscsearch {
 		 * @param ifirst_window Substring containing a window of a query length.
 		 * @return true if sequence contain similar region or false otherwise
 		 */
-		virtual bool process_window(std::string ifirst_window) = 0;
+		virtual bool process_window(std::string *ifirst_window) = 0;
 
 		/**
 		 * Update statistics by removing residues that will leave the window and applying one that approach it.
@@ -39,7 +39,7 @@ namespace nscsearch {
 		 *
 		 * @param iquery full query sequence.
 		 */
-		virtual void initialize_query_sequnce(std::string iquery) = 0;
+		virtual void initialize_query_sequnce(std::string *iquery) = 0;
 
 	private:
 

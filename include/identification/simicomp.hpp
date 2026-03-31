@@ -41,10 +41,10 @@ namespace nscsearch {
 	class SimiComp {
 	public:
 		SimiComp();
-		std::vector<identification_result_t> identify(std::string &iquery, std::string &ihit,
+		std::vector<identification_result_t> identify(std::string *iquery, std::string *ihit,
 				float ifrequency_diff_threshold, float irelative_threshold);
-		bool contain_similar_fragment(std::string &iquery, std::string &ihit, float ifrequency_diff_threshold);
-		void encode_string(std::string &iraw_string, std::vector<char> &oencoded_string);
+		bool contain_similar_fragment(std::string *iquery, std::string *ihit, float ifrequency_diff_threshold);
+		void encode_string(std::string *iraw_string, std::vector<char> *oencoded_string);
 		void similarity_score_per_window(std::vector<float> &oscores, std::vector<char> &iquery, std::vector<char> &ihit);
 
 	private:

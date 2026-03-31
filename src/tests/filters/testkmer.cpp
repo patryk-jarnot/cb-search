@@ -22,9 +22,9 @@ void test_filter_kmer_window_allow() {
 	string query_sequence = "AAAAAAAAAA";
 	string hit_sequence = "AAAAAAAAAA";
 	KmerFilter filter;
-	filter.initialize_query_sequnce(query_sequence);
+	filter.initialize_query_sequnce(&query_sequence);
 
-	ASSERT(filter.process_window(hit_sequence) == true);
+	ASSERT(filter.process_window(&hit_sequence) == true);
 }
 
 
@@ -32,9 +32,9 @@ void test_filter_kmer_window_reject() {
 	string query_sequence = "AAAAAAAAAA";
 	string hit_sequence = "CCCCCCCCCC";
 	KmerFilter filter;
-	filter.initialize_query_sequnce(query_sequence);
+	filter.initialize_query_sequnce(&query_sequence);
 
-	ASSERT(filter.process_window(hit_sequence) == false);
+	ASSERT(filter.process_window(&hit_sequence) == false);
 }
 
 
@@ -43,9 +43,9 @@ void test_filter_kmer_move_window_allow() {
 	string hit_sequence = "CCCCCCCCCC";
 	KmerFilter filter;
 	filter.set_acceptance_threshold(0.5);
-	filter.initialize_query_sequnce(query_sequence);
+	filter.initialize_query_sequnce(&query_sequence);
 
-	filter.process_window(hit_sequence);
+	filter.process_window(&hit_sequence);
 	filter.change_terminus_residues('C', 'A');
 	filter.change_terminus_residues('C', 'A');
 	filter.change_terminus_residues('C', 'A');
@@ -61,9 +61,9 @@ void test_filter_kmer_move_window_reject() {
 	string hit_sequence = "CCCCCCCCCC";
 	KmerFilter filter;
 	filter.set_acceptance_threshold(0.5);
-	filter.initialize_query_sequnce(query_sequence);
+	filter.initialize_query_sequnce(&query_sequence);
 
-	filter.process_window(hit_sequence);
+	filter.process_window(&hit_sequence);
 	filter.change_terminus_residues('C', 'D');
 	filter.change_terminus_residues('C', 'D');
 	filter.change_terminus_residues('C', 'D');
@@ -79,7 +79,7 @@ void test_filter_kmer_scan_sequence_identical_motif() {
 
 	KmerFilter filter;
 
-	ASSERT(filter.contain_similar_fragment(query, hit, 0.9) == true);
+	ASSERT(filter.contain_similar_fragment(&query, &hit, 0.9) == true);
 }
 
 

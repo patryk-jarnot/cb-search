@@ -20,7 +20,7 @@ namespace nscsearch {
 		/**
 		 * Documented in FilterBase.
 		 */
-		virtual bool process_window(std::string ifirst_window);
+		virtual bool process_window(std::string *ifirst_window);
 
 		/**
 		 * Documented in FilterBase.
@@ -30,12 +30,12 @@ namespace nscsearch {
 		/**
 		 * Documented in FilterBase.
 		 */
-		virtual void initialize_query_sequnce(std::string iquery);
+		virtual void initialize_query_sequnce(std::string *iquery);
 
 		virtual void set_acceptance_threshold(float ithreshold) { acceptance_threshold = ithreshold; }
 
-		bool contain_similar_fragment(std::string ihit);
-		virtual bool contain_similar_fragment(std::string iquery, std::string ihit, float iacceptance_threshold);
+		bool contain_similar_fragment(std::string *ihit);
+		virtual bool contain_similar_fragment(std::string *iquery, std::string *ihit, float iacceptance_threshold);
 
 		float get_similarity() { return (float)similar_kmers/window_length;}
 

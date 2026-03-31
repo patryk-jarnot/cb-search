@@ -32,7 +32,7 @@ void save_fragment(ostream *output, string iheader, string isequence) {
 
 int identify_thread(std::map<size_t, int>* worker_ids, OptionsSc *iopt, ostream *output, string query_head, string query_seq, string hit_head, string hit_seq) {
 	SimiComp sc;
-	std::vector<identification_result_t> fragments = sc.identify(query_seq, hit_seq, iopt->get_similarity_threshold(), iopt->get_relative_threshold());
+	std::vector<identification_result_t> fragments = sc.identify(&query_seq, &hit_seq, iopt->get_similarity_threshold(), iopt->get_relative_threshold());
 	for (identification_result_t fragment : fragments) {
 		string db_fragment = hit_seq.substr(fragment.begin-1, fragment.end - fragment.begin + 1);
 		save_fragment(output, hit_head, db_fragment);

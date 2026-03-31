@@ -27,8 +27,8 @@ std::vector<float> window_similarity_scores(std::string iquery, std::string iseq
 	std::vector<char> query_encoded(iquery.size());
 	std::vector<char> sequence_encoded(isequence.size());
 
-	sc.encode_string(iquery, query_encoded);
-	sc.encode_string(isequence, sequence_encoded);
+	sc.encode_string(&iquery, &query_encoded);
+	sc.encode_string(&isequence, &sequence_encoded);
 	sc.similarity_score_per_window(similarity_scores, query_encoded, sequence_encoded);
 	return similarity_scores;
 
@@ -39,7 +39,7 @@ std::vector<float> window_similarity_scores(std::string iquery, std::string iseq
 std::vector<result_t> identify(std::string iquery, std::string isequence, float isimilarity_threshold) {
 	SimiComp sc;
 
-	std::vector<identification_result_t> results = sc.identify(iquery, isequence, isimilarity_threshold, 0.1);
+	std::vector<identification_result_t> results = sc.identify(&iquery, &isequence, isimilarity_threshold, 0.1);
 
 	std::vector<result_t> results_result;
 

@@ -43,7 +43,7 @@ NscSearch::~NscSearch() {
 }
 
 
-int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequence iquery_sequence, Sequence idatabase_sequence, Options* iopt, vector<AlignBase*> *abs, KmerFilter *ikmer_filter) {//float igap_open_score, float igap_extension_score) {
+int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequence &iquery_sequence, Sequence idatabase_sequence, Options* iopt, vector<AlignBase*> *abs, KmerFilter *ikmer_filter) {//float igap_open_score, float igap_extension_score) {
 	int worker_id;
 
 	if (worker_ids == nullptr) {
@@ -61,8 +61,8 @@ int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequ
 
 	try {
 		if (iopt->get_is_composition_identification()) {
-			string query = iquery_sequence.get_sequence();
-			string hit = idatabase_sequence.get_sequence();
+			string *query = iquery_sequence.get_sequence_ptr();
+			string *hit = idatabase_sequence.get_sequence_ptr();
 			if (ikmer_filter->contain_similar_fragment(hit)) {
 				SimiComp sc;
 				std::vector<identification_result_t> fragments = sc.identify(query, hit, iopt->get_similarity_threshold(), iopt->get_relative_threshold());
@@ -76,8 +76,8 @@ int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequ
 		else if (dynamic_cast<OneWayGlobal *>(ab) != nullptr) {
 //			ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
 //			search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
-			string query = iquery_sequence.get_sequence();
-			string hit = idatabase_sequence.get_sequence();
+			string *query = iquery_sequence.get_sequence_ptr();
+			string *hit = idatabase_sequence.get_sequence_ptr();
 //			SimiComp sc;
 //			if (sc.contain_similar_fragment(query, hit, iopt->get_similarity_threshold())) {
 			if (ikmer_filter->contain_similar_fragment(hit)) {
@@ -86,8 +86,8 @@ int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequ
 			}
 		}
 		else {
-			string query = iquery_sequence.get_sequence();
-			string hit = idatabase_sequence.get_sequence();
+			string *query = iquery_sequence.get_sequence_ptr();
+			string *hit = idatabase_sequence.get_sequence_ptr();
 			if (ikmer_filter->contain_similar_fragment(hit)) {
 				ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
 				search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
@@ -199,7 +199,7 @@ results_t NscSearch::scan_database(Sequence &iquery_sequence) {
 	vector<AlignBase*> abs = setup_alignment_algorithms(opt, iquery_sequence);
 	KmerFilter kmer_filter;
 	kmer_filter.set_acceptance_threshold(opt->get_kmer_filter_threshold());
-	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence());
+	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence_ptr());
 
 	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 10;
 	while (database_reader->has_next_sequence()) {
@@ -209,8 +209,8 @@ results_t NscSearch::scan_database(Sequence &iquery_sequence) {
 			continue;
 		}
 
-		float longer_length = max(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
-		float shorter_length = min(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
+//		float longer_length = max(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
+//		float shorter_length = min(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
 //		if ((shorter_length != 0) && ((longer_length / shorter_length) < 2)) {
 //			if (nscsearch::jaccard_index(iquery_sequence.get_sequence_ptr(), ds.get_sequence_ptr()) > 0.5) {
 				if (thread_count > 1) {
@@ -246,7 +246,7 @@ results_t NscSearch::scan_database_idx(Sequence &iquery_sequence) {
 	vector<AlignBase*> abs = setup_alignment_algorithms(opt, iquery_sequence);
 	KmerFilter kmer_filter;
 	kmer_filter.set_acceptance_threshold(opt->get_kmer_filter_threshold());
-	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence());
+	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence_ptr());
 
 	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 10;
 

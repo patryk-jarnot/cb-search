@@ -108,9 +108,9 @@ void SimiComp::similarity_score_per_window(std::vector<float> &oscores, std::vec
 }
 
 
-void SimiComp::encode_string(std::string &iraw_string, std::vector<char> &oencoded_string) {
-	for (int i=0; i<iraw_string.size(); i++) {
-		oencoded_string[i] = mapper[iraw_string[i]];
+void SimiComp::encode_string(std::string *iraw_string, std::vector<char> *oencoded_string) {
+	for (int i=0; i<iraw_string->size(); i++) {
+		(*oencoded_string)[i] = mapper[(*iraw_string)[i]];
 	}
 }
 
@@ -228,7 +228,7 @@ void adjust_regions_lengths(vector<identification_result_t> &ioregions, std::vec
 }
 
 
-std::vector<identification_result_t> SimiComp::identify(std::string &iquery, std::string &ihit,
+std::vector<identification_result_t> SimiComp::identify(std::string *iquery, std::string *ihit,
 		float ifrequency_diff_threshold, float irelative_threshold) {
 
 //	auto start = high_resolution_clock::now();
@@ -236,11 +236,11 @@ std::vector<identification_result_t> SimiComp::identify(std::string &iquery, std
 //		cerr << "Hit shorter than window size...\n";
 //		return vector<identification_result_t>();
 //	}
-	std::vector<char> query_encoded(iquery.size());
-	std::vector<char> hit_encoded(ihit.size());
+	std::vector<char> query_encoded(iquery->size());
+	std::vector<char> hit_encoded(ihit->size());
 
-	encode_string(iquery, query_encoded);
-	encode_string(ihit, hit_encoded);
+	encode_string(iquery, &query_encoded);
+	encode_string(ihit, &hit_encoded);
 	vector<float> similarity_scores;
 	similarity_score_per_window(similarity_scores, query_encoded, hit_encoded);
 
@@ -252,7 +252,7 @@ std::vector<identification_result_t> SimiComp::identify(std::string &iquery, std
 
 	vector<identification_result_t> retval;
 
-	int extremas_window_size = min(iquery.size(), ihit.size());
+	int extremas_window_size = min(iquery->size(), ihit->size());
 	find_extremas(retval, similarity_scores, extremas_window_size, ifrequency_diff_threshold);
 
 //	auto p0 = high_resolution_clock::now();
@@ -266,16 +266,16 @@ std::vector<identification_result_t> SimiComp::identify(std::string &iquery, std
 }
 
 
-bool SimiComp::contain_similar_fragment(std::string &iquery, std::string &ihit, float ifrequency_diff_threshold) {
-	std::vector<char> query_encoded(iquery.size());
-	std::vector<char> hit_encoded(ihit.size());
+bool SimiComp::contain_similar_fragment(std::string *iquery, std::string *ihit, float ifrequency_diff_threshold) {
+	std::vector<char> query_encoded(iquery->size());
+	std::vector<char> hit_encoded(ihit->size());
 
-	encode_string(iquery, query_encoded);
-	encode_string(ihit, hit_encoded);
+	encode_string(iquery, &query_encoded);
+	encode_string(ihit, &hit_encoded);
 
-	int window_size = iquery.size();
+	int window_size = iquery->size();
 
-	if (ihit.size()<window_size) {
+	if (ihit->size()<window_size) {
 //		cerr << "Hit shorter than window size. Query: " << iquery << ", hit: " << ihit << "\n";
 		return false;
 	}
@@ -284,7 +284,7 @@ bool SimiComp::contain_similar_fragment(std::string &iquery, std::string &ihit, 
 	memset(query_composition, 0, sizeof(query_composition));
 	calculate_window_composition(query_composition, &query_encoded, 0, window_size);
 
-	int hit_window_len = min((int)ihit.size(), window_size);
+	int hit_window_len = min((int)ihit->size(), window_size);
 	int hit_window_composition[ALPHABET_SIZE];
 	memset(hit_window_composition, 0, sizeof(hit_window_composition));
 	calculate_window_composition(hit_window_composition, &hit_encoded, 0, hit_window_len);
@@ -295,7 +295,7 @@ bool SimiComp::contain_similar_fragment(std::string &iquery, std::string &ihit, 
 		return true;
 	}
 
-	for (int i=1; i<(int)ihit.size()-window_size+1; i++) {
+	for (int i=1; i<(int)ihit->size()-window_size+1; i++) {
 		modify_window_composition_and_score(query_composition, hit_window_composition, score, hit_encoded[i-1], hit_encoded[i+window_size-1], window_size, window_size);
 		norm_score = (float)score / window_size;
 		if (norm_score >= ifrequency_diff_threshold) {

@@ -25,7 +25,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMQVPPPPPPPPPQWERTNMPVQWERTNMPVQWERTNMPV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -43,7 +43,7 @@ namespace nscsearch {
 		std::string sequence = "PPPPPPPPPQWERTNMPVQWERTNMPVQWERTNMQVQWERTNMPVQWERTNMPVQWERTNMQV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 		ASSERT(results.size() == 1);
 		ASSERT(results.size() > 0 && results[0].begin == 1);
@@ -56,7 +56,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMQVQWERTNMPVQWERTNMPVQWERTNMQVPPPPPPPPP";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -74,7 +74,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMQVPRPRPRPRPQWERTNMPVQWERTNMPVQWERTNMPV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 		ASSERT(results.size() == 1);
 		ASSERT(results.size() > 0 && results[0].begin == 28);
@@ -87,7 +87,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMQVPPPPPPPPPQWERTNMPVQWERTPPPPPPPPPNMPVQWERTNMPV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 
 		ASSERT(results.size() == 2);
@@ -106,7 +106,7 @@ namespace nscsearch {
 
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results[0].begin);
 //		DEBUG(results[0].end);
@@ -125,7 +125,7 @@ namespace nscsearch {
 
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 		ASSERT(results.size() == 1);
 		ASSERT(results.size() > 0 && results[0].begin == 28);
@@ -141,7 +141,7 @@ namespace nscsearch {
 
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 		ASSERT(results.size() == 1);
 		ASSERT(results.size() > 0 && results[0].begin == 5);
@@ -157,7 +157,7 @@ namespace nscsearch {
 
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results[0].begin);
 //		DEBUG(results[0].end);
@@ -176,7 +176,7 @@ namespace nscsearch {
 
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		for (int i=0; i<results.size(); i++) {
 //			DEBUG(results[i].begin);
@@ -196,7 +196,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMPPPQPPPVPPPPPPPPPQWERTNMPVQWERTNMPVQWERTNMPV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 		ASSERT(results.size() == 1);
 		ASSERT(results.size() > 0 && results[0].begin == 26);
@@ -209,7 +209,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMPPPPPPPPPVPPPQPPPQWERTNMPVQWERTNMPVQWERTNMPV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 		ASSERT(results.size() == 1);
 		ASSERT(results.size() > 0 && results[0].begin == 26);
@@ -222,7 +222,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMQVPPPPPPPPPQWERTNMPVQWERTNMPVQWERTNMPV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -241,7 +241,7 @@ namespace nscsearch {
 		std::string sequence = "PPPPPPPPPQWERTNMPVQWERTNMPVQWERTNMQVQWERTNMPVQWERTNMPVQWERTNMQV";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -259,7 +259,7 @@ namespace nscsearch {
 		std::string sequence = "QWERTNMPVQWERTNMPVQWERTNMQVQWERTNMPVQWERTNMPVQWERTNMQVPPPPPPPPP";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -277,7 +277,7 @@ namespace nscsearch {
 		std::string sequence = "PPPPPPPPP";
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -298,7 +298,7 @@ MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNSLSQPKRSSPPGNSMY
 */
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -322,7 +322,7 @@ MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNSLSQPKRSSPPGNSMY
 
 		SimiComp sc;
 
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 //		DEBUG(results[0].begin);
@@ -340,7 +340,7 @@ MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNSLSQPKRSSPPGNSMY
 		std::string sequence = "AAAAAAAAAAAAAAAAA";
 
 		SimiComp sc;
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 //		DEBUG(results.size());
 		ASSERT(results.size() == 1);
@@ -353,7 +353,7 @@ MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNSLSQPKRSSPPGNSMY
 		std::string sequence = "CCCCCCCCCCCCCCCCC";
 
 		SimiComp sc;
-		std::vector<identification_result_t> results = sc.identify(query, sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
+		std::vector<identification_result_t> results = sc.identify(&query, &sequence, SCORE_THRESHOLD, RELATIVE_THRESHOLD);
 
 		ASSERT(results.size() == 0);
 	}
@@ -364,7 +364,7 @@ MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNSLSQPKRSSPPGNSMY
 		std::string sequence = "MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNAAAAAAAAAAASLSQPKRSSPPGNSMYNMANQGPMGMMGGFGMGMNNKQMREFMIARRTHGVSPFLKKKICHMAKVAPPVNGQMPSPPQLYAQGFKIRRIGKWFSQDLDWSEGVAMCHNKEMEHRGCEKTPSSKWGRMFPGMGGMGGMGGMGGMMMGNRPMASCDVTKPNSCGNPALMKCSKYHKDRFGMPVCCATSEMTANQLENMGF";
 
 		SimiComp sc;
-		bool contain = sc.contain_similar_fragment(query, sequence, SCORE_THRESHOLD);
+		bool contain = sc.contain_similar_fragment(&query, &sequence, SCORE_THRESHOLD);
 
 		ASSERT(contain == true);
 	}
@@ -375,7 +375,7 @@ MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNSLSQPKRSSPPGNSMY
 		std::string sequence = "MSIMRRILCLAVVIFIINDVSSQGLGNNKNWKKNGMSLSSPGNKKPTGNNAVPQKSKMNNMNQNSLSQPKRSSPPGNSMYNMANQGPMGMMGGFGMGMNNKQMREFMIARRTHGVSPFLKKKICHMAKVAPPVNGQMPSPPQLYAQGFKIRRIGKWFSQDLDWSEGVAMCHNKEMEHRGCEKTPSSKWGRMFPGMGGMGGMGGMGGMMMGNRPMASCDVTKPNSCGNPALMKCSKYHKDRFGMPVCCATSEMTANQLENMGF";
 
 		SimiComp sc;
-		bool contain = sc.contain_similar_fragment(query, sequence, SCORE_THRESHOLD);
+		bool contain = sc.contain_similar_fragment(&query, &sequence, SCORE_THRESHOLD);
 
 		ASSERT(contain == false);
 	}
