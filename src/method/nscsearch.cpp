@@ -61,9 +61,9 @@ int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequ
 
 	try {
 		if (iopt->get_is_composition_identification()) {
-			string *query = iquery_sequence.get_sequence_ptr();
 			string *hit = idatabase_sequence.get_sequence_ptr();
 			if (ikmer_filter->contain_similar_fragment(hit)) {
+				string *query = iquery_sequence.get_sequence_ptr();
 				SimiComp sc;
 				std::vector<identification_result_t> fragments = sc.identify(query, hit, iopt->get_similarity_threshold(), iopt->get_relative_threshold());
 
@@ -73,22 +73,10 @@ int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequ
 				}
 			}
 		}
-		else if (dynamic_cast<OneWayGlobal *>(ab) != nullptr) {
-//			ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
-//			search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
-			string *query = iquery_sequence.get_sequence_ptr();
-			string *hit = idatabase_sequence.get_sequence_ptr();
-//			SimiComp sc;
-//			if (sc.contain_similar_fragment(query, hit, iopt->get_similarity_threshold())) {
-			if (ikmer_filter->contain_similar_fragment(hit)) {
-				ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
-				search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
-			}
-		}
 		else {
-			string *query = iquery_sequence.get_sequence_ptr();
 			string *hit = idatabase_sequence.get_sequence_ptr();
 			if (ikmer_filter->contain_similar_fragment(hit)) {
+				string *query = iquery_sequence.get_sequence_ptr();
 				ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
 				search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
 			}
