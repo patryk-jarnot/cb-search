@@ -204,8 +204,8 @@ results_t NscSearch::scan_database(Sequence &iquery_sequence) {
 	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 20;
 	while (database_reader->has_next_sequence()) {
 		while (thread_pool.get_tasks_count() > (NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD * thread_count)) {
-			DEBUG("waiting");
-			std::this_thread::sleep_for(std::chrono::microseconds(100));
+//			DEBUG("waiting");
+			std::this_thread::sleep_for(std::chrono::microseconds(50));
 		}
 		Sequence ds = database_reader->get_next_sequence();
 		if (ds.get_sequence().length() == 0) {
