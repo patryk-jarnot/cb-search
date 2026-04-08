@@ -16,9 +16,6 @@ using namespace std;
 using namespace nscsearch;
 
 
-
-
-
 bool KmerFilter::process_window(std::string *ifirst_window) {
 	if (ifirst_window->empty()) {
 		return false;
