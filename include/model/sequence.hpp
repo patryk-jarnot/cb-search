@@ -14,6 +14,7 @@
 namespace cbsearch {
 	class Sequence {
 	public:
+		Sequence() {}
 		Sequence(std::string iheader, std::string isequence);
 
 		std::string get_header() { return header; }
@@ -22,7 +23,6 @@ namespace cbsearch {
 		std::string* get_header_ptr() { return &header; }
 		std::string* get_sequence_ptr() { return &sequence; }
 
-	private:
 		std::string header;
 		std::string sequence;
 	};

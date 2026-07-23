@@ -48,6 +48,9 @@ private:
     std::mutex queue_mutex;
     std::mutex worker_id_mutex;
     std::condition_variable condition;
+	std::condition_variable not_full_cv;   // NEW: For producers waiting for space
+
+    size_t max_capacity;                   // NEW: Max tasks allowed in queue
     bool terminate;
     bool stopped;
 
@@ -68,6 +71,11 @@ auto ThreadPool::enqueue(F &&f, Args &&... args) -> std::future<typename std::re
 	std::future<return_type> res = task->get_future();
 	{
 		std::unique_lock<std::mutex> lock(queue_mutex);
+
+		// --- Block if the queue is full ---
+		not_full_cv.wait(lock, [this] {
+			return this->tasks.size() < this->max_capacity || this->terminate;
+		});
 
 		if (terminate)
 			throw std::runtime_error("enqueue on stopped ThreadPool");

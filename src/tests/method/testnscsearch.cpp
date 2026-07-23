@@ -45,7 +45,7 @@ void TestNscSearch::test_serach_sequence() {
 
 	while (query_sequences.has_next_sequence()) {
 		Sequence sequence = query_sequences.get_next_sequence();
-		results_t result = ns.scan_database(sequence);
+		results_t result = ns.scan_database_workers(sequence);
 
 		//ASSERT(result.alignments.size() == 1);
 		if (result.alignments.size() == 1) {
@@ -71,7 +71,7 @@ void TestNscSearch::test_serach_sequence_with_composition_identification() {
 
 	NscSearch ns(&options, &database_sequences);
 	Sequence sequence(">head_query", "PPPPP");
-	results_t result = ns.scan_database(sequence);
+	results_t result = ns.scan_database_workers(sequence);
 
 	ASSERT(result.alignments.size() == 1);
 	ASSERT(result.alignments.size() == 1 && result.alignments[0].hit_alignment.compare("PPPPPPPPPP") == 0);
@@ -94,7 +94,7 @@ void test_serach_sequence_in_threshold_scope_not_common_kmers() {
 
 	while (query_sequences.has_next_sequence()) {
 		Sequence sequence = query_sequences.get_next_sequence();
-		results_t result = ns.scan_database(sequence);
+		results_t result = ns.scan_database_workers(sequence);
 
 		ASSERT(result.alignments.size() == 0);
 	}
@@ -115,7 +115,7 @@ void TestNscSearch::test_serach_sequence_out_of_threshold() {
 
 	while (query_sequences.has_next_sequence()) {
 		Sequence sequence = query_sequences.get_next_sequence();
-		results_t result = ns.scan_database(sequence);
+		results_t result = ns.scan_database_workers(sequence);
 
 		ASSERT(result.alignments.size() == 0);
 	}

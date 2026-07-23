@@ -20,6 +20,7 @@ ThreadPool::ThreadPool(int ithread_count) {
 	else {
 		thread_count = ithread_count;
 	}
+    max_capacity = thread_count * 10;
 	terminate = false;
 	stopped = false;
 	construct();
@@ -28,6 +29,7 @@ ThreadPool::ThreadPool(int ithread_count) {
 
 ThreadPool::ThreadPool() {
 	thread_count = std::thread::hardware_concurrency();
+    max_capacity = thread_count * 10;
 	terminate = false;
 	stopped = false;
 }
@@ -53,6 +55,10 @@ void ThreadPool::construct() {
 					task = std::move(this->tasks.front());
 					this->tasks.pop();
 				}
+
+				// --- NEW: Notify producers that space opened up ---
+				// We notify outside the lock to minimize contention
+				this->not_full_cv.notify_one();
 
 				task();
 			}

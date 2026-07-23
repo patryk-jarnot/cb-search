@@ -78,7 +78,7 @@ void run_method(Options *opt, istream *input, ostream *output) {
 
 	while (query_reader->has_next_sequence()) {
 		Sequence next_sequence = query_reader->get_next_sequence();
-		search.scan_database(next_sequence);
+		search.scan_database_workers(next_sequence);
 		results_t results = search.get_results();
 		results.query_header = next_sequence.get_header();
 		results_output.print_records(output, &results, opt->get_limit(), opt->get_output_format());

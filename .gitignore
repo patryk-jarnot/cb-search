@@ -34,4 +34,5 @@ m4/
 __pycache__/
 include/config-cbsearch.h.in~
 doc/
-
+rsync_repo.sh
+rsync_ignore.txt

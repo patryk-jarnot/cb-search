@@ -13,6 +13,7 @@
 #include "utils/fasta.hpp"
 #include "utils/stringutils.hpp"
 #include "utils/threadpool.hpp"
+#include "utils/threadsafequeue.hpp"
 #include "filters/kmer.hpp"
 #include "debug.hpp"
 #include "exceptions.hpp"
@@ -21,8 +22,9 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <functional>
 
-#include "../../include/method/nscsearch.hpp"
+#include "method/nscsearch.hpp"
 #include "identification/simicomp.hpp"
 //#include "identification/frequencyidentificator.hpp"
 
@@ -43,50 +45,42 @@ NscSearch::~NscSearch() {
 }
 
 
-int scan_fasta_thread(std::map<size_t, int>* worker_ids, NscSearch *search, Sequence &iquery_sequence, Sequence idatabase_sequence, Options* iopt, vector<AlignBase*> *abs, KmerFilter *ikmer_filter) {//float igap_open_score, float igap_extension_score) {
-	int worker_id;
+int worker_thread(int worker_id, NscSearch *search, Options* iopt, AlignBase *ab, Sequence &iquery_sequence, ThreadSafeQueue<Sequence> *idatabase_sequence_queue) {
+	Sequence database_sequence;
+	while (true) {
+		idatabase_sequence_queue->wait_and_pop(database_sequence);
 
-	if (worker_ids == nullptr) {
-		worker_id = 0;
-	}
-	else {
-		auto it = worker_ids->find(std::hash<std::thread::id>{}(std::this_thread::get_id()));
-		assert(it != worker_ids->end());
-		worker_id = it->second;
-	}
+		if (database_sequence.header.length() == 0) {
+			return 0;
+		}
 
-	AlignBase *ab = (*abs)[worker_id];
+		int worker_id;
 
-	static int counter = 0;
+		static int counter = 0;
 
-	try {
-		if (iopt->get_is_composition_identification()) {
-			string *hit = idatabase_sequence.get_sequence_ptr();
-			if (ikmer_filter->contain_similar_fragment(hit)) {
+		try {
+			if (iopt->get_is_composition_identification()) {
+				string *hit = database_sequence.get_sequence_ptr();
 				string *query = iquery_sequence.get_sequence_ptr();
 				SimiComp sc;
 				std::vector<identification_result_t> fragments = sc.identify(query, hit, iopt->get_similarity_threshold(), iopt->get_relative_threshold());
 
 				for (identification_result_t fragment : fragments) {
-					ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence().substr(fragment.begin-1, fragment.end - fragment.begin + 1), iopt->get_gap_open(), iopt->get_gap_extension());
-					search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, fragment.begin, fragment.end);
+					ab->align(iquery_sequence.get_sequence(), database_sequence.get_sequence().substr(fragment.begin-1, fragment.end - fragment.begin + 1), iopt->get_gap_open(), iopt->get_gap_extension());
+					search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, database_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, fragment.begin, fragment.end);
 				}
 			}
-		}
-		else {
-			string *hit = idatabase_sequence.get_sequence_ptr();
-			if (ikmer_filter->contain_similar_fragment(hit)) {
+			else {
 				string *query = iquery_sequence.get_sequence_ptr();
-				ab->align(iquery_sequence.get_sequence(), idatabase_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
-				search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, idatabase_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
+				ab->align(iquery_sequence.get_sequence(), database_sequence.get_sequence(), iopt->get_gap_open(), iopt->get_gap_extension());
+				search->save_reported_record(ab->get_alignments()[0].query_alignment, ab->get_alignments()[0].midline_alignment, database_sequence.get_header(), ab->get_alignments()[0].hit_alignment, ab->get_alignments()[0].score, ab->get_alignments()[0].similarity_score, ab->get_alignments()[0].identity, ab->get_alignments()[0].similarity, -1, -1);
 			}
+
 		}
-
+		catch (std::invalid_argument &e) {
+			WARNING(e.what());
+		}
 	}
-	catch (std::invalid_argument &e) {
-		WARNING(e.what());
-	}
-
 	return 0;
 }
 
@@ -173,12 +167,10 @@ void delete_alignment_algorithms(Options *opt, vector<AlignBase*> abs) {
 }
 
 
-results_t NscSearch::scan_database(Sequence &iquery_sequence) {
+results_t NscSearch::scan_database_workers(Sequence &iquery_sequence) {
 	assert(database_reader != nullptr);  // You have to call different constructor
 
 	int thread_count = opt->get_thread_count();
-
-	ThreadPool thread_pool(thread_count);
 
 	if (thread_count < 2) {
 		thread_count = 1;
@@ -189,93 +181,35 @@ results_t NscSearch::scan_database(Sequence &iquery_sequence) {
 	kmer_filter.set_acceptance_threshold(opt->get_kmer_filter_threshold());
 	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence_ptr());
 
-	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 20;
+	ThreadSafeQueue<Sequence> database_sequence_queue;
+
+	std::vector<std::thread> workers;
+
+	for (int i=0; i<thread_count; i++) {
+		workers.emplace_back(worker_thread, i, this, opt, abs[i], ref(iquery_sequence), &database_sequence_queue);
+	}
+
 	while (database_reader->has_next_sequence()) {
-		while (thread_pool.get_tasks_count() > (NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD * thread_count)) {
-//			DEBUG("waiting");
-			std::this_thread::sleep_for(std::chrono::microseconds(50));
-		}
 		Sequence ds = database_reader->get_next_sequence();
 		if (ds.get_sequence().length() == 0) {
 			continue;
 		}
 
-//		float longer_length = max(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
-//		float shorter_length = min(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
-//		if ((shorter_length != 0) && ((longer_length / shorter_length) < 2)) {
-//			if (nscsearch::jaccard_index(iquery_sequence.get_sequence_ptr(), ds.get_sequence_ptr()) > 0.5) {
-				if (thread_count > 1) {
-					std::future<int> x = thread_pool.enqueue(scan_fasta_thread, thread_pool.get_worker_ids(), this, iquery_sequence, ds, opt, &abs, &kmer_filter);//, opt->get_gap_open(), opt->get_gap_extension());
-				} else {
-					scan_fasta_thread(nullptr, this, iquery_sequence, ds, opt, &abs, &kmer_filter); //, opt->get_gap_open(), opt->get_gap_extension());
-				}
-//			}
-//		}
-	}
-
-	while (thread_pool.get_tasks_count() > 0) std::this_thread::sleep_for(std::chrono::microseconds(500));
-
-	thread_pool.dispose();
-
-	delete_alignment_algorithms(opt, abs);
-
-	return results;
-}
-
-
-results_t NscSearch::scan_database_idx(Sequence &iquery_sequence) {
-	assert(database_reader != nullptr);  // You have to call different constructor
-
-	int thread_count = opt->get_thread_count();
-
-	ThreadPool thread_pool(thread_count);
-
-	if (thread_count < 2) {
-		thread_count = 1;
-	}
-
-	vector<AlignBase*> abs = setup_alignment_algorithms(opt, iquery_sequence);
-	KmerFilter kmer_filter;
-	kmer_filter.set_acceptance_threshold(opt->get_kmer_filter_threshold());
-	kmer_filter.initialize_query_sequnce(iquery_sequence.get_sequence_ptr());
-
-	const int NUMBER_OF_TASKS_IN_WAITING_QUEUE_PER_THREAD = 20;
-
-	CbDbReader reader;
-//	reader.set_handlers(input, output_mers, output_idx);
-	reader.open_files(opt->get_database_file_path());
-	reader.load_database();
-//	map<uint16_t, int> count_by_kmer = count_kmers(iquery_sequence);
-//	vector<Sequence> db_seqs = reader.get_seqeunces(iquery_sequence.get_sequence_ptr(), 0.3);
-	reader.find_seqeunces(iquery_sequence.get_sequence_ptr(), opt->get_kmer_filter_threshold());
-
-	while (reader.has_next_sequence()) {
-		Sequence ds = reader.get_next_sequence();
-		if (ds.get_sequence().length() == 0) {
-			continue;
+		if (kmer_filter.contain_similar_fragment(ds.get_sequence_ptr())) {
+			database_sequence_queue.push(ds);
 		}
-
-		float longer_length = max(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
-		float shorter_length = min(iquery_sequence.get_sequence().length(), ds.get_sequence().length());
-//		if ((shorter_length != 0) && ((longer_length / shorter_length) < 2)) {
-//			if (nscsearch::jaccard_index(iquery_sequence.get_sequence_ptr(), ds.get_sequence_ptr()) > 0.5) {
-				if (thread_count > 1) {
-					std::future<int> x = thread_pool.enqueue(scan_fasta_thread, thread_pool.get_worker_ids(), this, iquery_sequence, ds, opt, &abs, &kmer_filter);//, opt->get_gap_open(), opt->get_gap_extension());
-				} else {
-					scan_fasta_thread(nullptr, this, iquery_sequence, ds, opt, &abs, &kmer_filter); //, opt->get_gap_open(), opt->get_gap_extension());
-				}
-//			}
-//		}
 	}
 
-	while (thread_pool.get_tasks_count() > 0) std::this_thread::sleep_for(std::chrono::microseconds(500));
-
-	thread_pool.dispose();
+	for (int i=0; i<thread_count; i++) {
+		database_sequence_queue.push(Sequence("", ""));
+	}
+	for (int i=0; i<thread_count; i++) {
+		workers[i].join();
+	}
 
 	delete_alignment_algorithms(opt, abs);
 
 	return results;
 }
-
 
 
