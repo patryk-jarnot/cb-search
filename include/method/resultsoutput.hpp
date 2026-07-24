@@ -51,6 +51,7 @@ private:
 	void print_details();
 
 	void print_json();
+	void print_abc();
 
 //	std::vector<results_record_t> records;
 	results_t *results;

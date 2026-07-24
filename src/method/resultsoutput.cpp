@@ -137,6 +137,29 @@ void ResultsOutput::print_json() {
 }
 
 
+void ResultsOutput::print_abc() {
+	std::string query_idx = results->query_header.empty() ? "" : results->query_header.substr(1);
+	vector<string> query_elements = split_regex(query_idx, "\\s");
+	query_idx = query_elements.empty() ? "" : query_elements[0];
+
+	for (size_t i=0; i<results->alignments.size(); i++) {
+		auto record = results->alignments[i];
+
+		if (i >= limit) {
+			break;
+		}
+
+		std::string hit_idx = record.hit_header.empty() ? "" : record.hit_header.substr(1);
+		vector<string> hit_elements = split_regex(hit_idx, "\\s");
+		hit_idx = hit_elements.empty() ? "" : hit_elements[0];
+
+		*output << query_idx << "\t";
+		*output << hit_idx << "\t";
+		*output << record.simi_score << "\n";
+	}
+}
+
+
 void ResultsOutput::print_records(std::ostream *ioutput, results_t *iresults) {
 	print_records(ioutput, iresults, std::numeric_limits<int>::max());
 }
@@ -161,6 +184,9 @@ void ResultsOutput::print_records(std::ostream *ioutput, results_t *iresults, in
 		break;
 	case OutputFormat::JSON:
 		print_json();
+		break;
+	case OutputFormat::ABC:
+		print_abc();
 		break;
 	}
 }

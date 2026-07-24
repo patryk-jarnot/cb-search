@@ -23,6 +23,7 @@
 using namespace std;
 using namespace nscsearch;
 
+
 void Options::show_help() {
     cout << "Usage: cbsearch [options]\n";
     cout << "\n";
@@ -50,6 +51,7 @@ void Options::show_help() {
     cout << "  -f, --output-format=INT    Specifies format in which results will be presented\n";
     cout << "                               0 - Human readable (default)\n";
     cout << "                               1 - JSON\n";
+    cout << "                               2 - ABC\n";
     cout << "  -t, --threshold=FLOAT      Determines minimal value of sorted column in output\n";
     cout << "                               records. (default: " << threshold << ")\n";
     cout << "  -l, --limit=INT            Maximal number of results reported by the method.\n";

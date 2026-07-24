@@ -160,6 +160,7 @@ vector<AlignBase*> setup_alignment_algorithms(Options *opt, Sequence &iquery_seq
 	return abs;
 }
 
+
 void delete_alignment_algorithms(Options *opt, vector<AlignBase*> abs) {
 	for (AlignBase* ab : abs) {
 		delete ab;
