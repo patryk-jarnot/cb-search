@@ -72,16 +72,18 @@ void dispose_files(istream *input, ostream *output, ifstream &database_stream) {
 void run_method(Options *opt, istream *input, ostream *output) {
 	unique_ptr<SequenceReader> query_reader(new SequenceReaderFasta(input));
 
+	ResultsOutput results_output(opt->get_sort_output_by(), opt->get_threshold());
+	results_output.begin_writing(output, opt->get_output_format());
 	while (query_reader->has_next_sequence()) {
 		unique_ptr<SequenceReader> database_reader(new SequenceReaderFasta(opt->get_database_file_path()));
 		NscSearch search(opt, database_reader.get());
-		ResultsOutput results_output(opt->get_sort_output_by(), opt->get_threshold());
 		Sequence next_sequence = query_reader->get_next_sequence();
 		search.scan_database_workers(next_sequence);
 		results_t results = search.get_results();
 		results.query_header = next_sequence.get_header();
 		results_output.print_records(output, &results, opt->get_limit(), opt->get_output_format());
 	}
+	results_output.end_writing(output, opt->get_output_format());
 }
 
 

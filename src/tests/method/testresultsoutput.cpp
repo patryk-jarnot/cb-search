@@ -23,6 +23,7 @@ using namespace std;
 
 void test_single_hit_json() {
 	string expected = ""
+			"[\n"
 			"{\n"
 			"	\"query_header\": \">query header\",\n"
 			"	\"hits\": [\n"
@@ -37,7 +38,8 @@ void test_single_hit_json() {
 			"			\"identity\": 0.5\n"
 			"		}\n"
 			"	]\n"
-			"}\n";
+			"}\n"
+			"]";
 	stringstream observed_stream;
 	ResultsOutput ro;
 //	ro.process_record();
@@ -55,7 +57,9 @@ void test_single_hit_json() {
 	item.identity = 0.5;
 
 	results.alignments.push_back(item);
+	ro.begin_writing(&observed_stream, OutputFormat::JSON);
 	ro.print_records(&observed_stream, &results, 100, OutputFormat::JSON);
+	ro.end_writing(&observed_stream, OutputFormat::JSON);
 	string observed = observed_stream.str();
 
 //	cerr << observed << "\n\n";
@@ -67,6 +71,7 @@ void test_single_hit_json() {
 
 void test_two_hits_json() {
 	string expected = ""
+			"[\n"
 			"{\n"
 			"	\"query_header\": \">query header\",\n"
 			"	\"hits\": [\n"
@@ -91,12 +96,14 @@ void test_two_hits_json() {
 			"			\"identity\": 0.5\n"
 			"		}\n"
 			"	]\n"
-			"}\n";
+			"}\n"
+			"]";
 	stringstream observed_stream;
 	ResultsOutput ro;
 //	ro.process_record();
 	results_t results;
 	results.query_header = ">query header";
+
 
 	results_item_t item;
 	item.query_alignment = "ASDF";
@@ -119,7 +126,102 @@ void test_two_hits_json() {
 	item.identity = 0.5;
 	results.alignments.push_back(item);
 
+	ro.begin_writing(&observed_stream, OutputFormat::JSON);
 	ro.print_records(&observed_stream, &results, 100, OutputFormat::JSON);
+	ro.end_writing(&observed_stream, OutputFormat::JSON);
+	string observed = observed_stream.str();
+
+	ASSERT(expected.compare(observed) == 0);
+}
+
+
+
+void test_two_queries_hits_json() {
+	string expected = ""
+			"[\n"
+			"{\n"
+			"	\"query_header\": \">query header\",\n"
+			"	\"hits\": [\n"
+			"		{\n"
+			"			\"query_alignment\": \"ASDF\",\n"
+			"			\"midline\": \" +DF\",\n"
+			"			\"hit_alignment\": \"QWDF\",\n"
+			"			\"hit_header\": \">hit header\",\n"
+			"			\"score\": 20,\n"
+			"			\"simi_score\": 0.8,\n"
+			"			\"similarity\": 0.75,\n"
+			"			\"identity\": 0.5\n"
+			"		},\n"
+			"		{\n"
+			"			\"query_alignment\": \"ASDF\",\n"
+			"			\"midline\": \" +DF\",\n"
+			"			\"hit_alignment\": \"VWDF\",\n"
+			"			\"hit_header\": \">hit header2\",\n"
+			"			\"score\": 18,\n"
+			"			\"simi_score\": 0.8,\n"
+			"			\"similarity\": 0.75,\n"
+			"			\"identity\": 0.5\n"
+			"		}\n"
+			"	]\n"
+			"},\n"
+			"{\n"
+			"	\"query_header\": \">query header\",\n"
+			"	\"hits\": [\n"
+			"		{\n"
+			"			\"query_alignment\": \"ASDF\",\n"
+			"			\"midline\": \" +DF\",\n"
+			"			\"hit_alignment\": \"QWDF\",\n"
+			"			\"hit_header\": \">hit header\",\n"
+			"			\"score\": 20,\n"
+			"			\"simi_score\": 0.8,\n"
+			"			\"similarity\": 0.75,\n"
+			"			\"identity\": 0.5\n"
+			"		},\n"
+			"		{\n"
+			"			\"query_alignment\": \"ASDF\",\n"
+			"			\"midline\": \" +DF\",\n"
+			"			\"hit_alignment\": \"VWDF\",\n"
+			"			\"hit_header\": \">hit header2\",\n"
+			"			\"score\": 18,\n"
+			"			\"simi_score\": 0.8,\n"
+			"			\"similarity\": 0.75,\n"
+			"			\"identity\": 0.5\n"
+			"		}\n"
+			"	]\n"
+			"}\n"
+			"]";
+	stringstream observed_stream;
+	ResultsOutput ro;
+//	ro.process_record();
+	results_t results;
+	results.query_header = ">query header";
+
+
+	results_item_t item;
+	item.query_alignment = "ASDF";
+	item.midline_alignment = " +DF";
+	item.hit_alignment = "QWDF";
+	item.hit_header = ">hit header";
+	item.score = 20;
+	item.similarity = 0.75;
+	item.simi_score = 0.80;
+	item.identity = 0.5;
+	results.alignments.push_back(item);
+
+	item.query_alignment = "ASDF";
+	item.midline_alignment = " +DF";
+	item.hit_alignment = "VWDF";
+	item.hit_header = ">hit header2";
+	item.score = 18;
+	item.similarity = 0.75;
+	item.simi_score = 0.80;
+	item.identity = 0.5;
+	results.alignments.push_back(item);
+
+	ro.begin_writing(&observed_stream, OutputFormat::JSON);
+	ro.print_records(&observed_stream, &results, 100, OutputFormat::JSON);
+	ro.print_records(&observed_stream, &results, 100, OutputFormat::JSON);
+	ro.end_writing(&observed_stream, OutputFormat::JSON);
 	string observed = observed_stream.str();
 
 	ASSERT(expected.compare(observed) == 0);
@@ -131,6 +233,7 @@ void TestResultsOutput::run() {
 	initialize_data();
 	test_single_hit();
 	test_two_hits();
+	test_two_queries_hits_json();
 
 	test_two_hits_sort_by_score();
 	test_two_hits_sort_by_identity();

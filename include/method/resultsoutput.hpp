@@ -39,6 +39,9 @@ public:
 	void print_records(std::ostream *ioutput, results_t *iresults, int limit);
 	void print_records(std::ostream *ioutput, results_t *iresults, int ilimit, OutputFormat ioutput_format);
 
+	void begin_writing(std::ostream *ioutput, OutputFormat ioutput_format);
+	void end_writing(std::ostream *ioutput, OutputFormat ioutput_format);
+
 	void set_threshold(int ithreshold) { threshold = ithreshold; }
 
 private:
@@ -51,6 +54,8 @@ private:
 	void print_details();
 
 	void print_json();
+	void begin_writing_json();
+	void end_writing_json();
 	void print_abc();
 
 //	std::vector<results_record_t> records;
@@ -61,6 +66,7 @@ private:
 	int max_alignment_width;
 	float threshold;
 	int limit;
+	bool first_record_written;
 
 	static SortOutputBy sort_by;
 };

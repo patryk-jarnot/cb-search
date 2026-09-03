@@ -26,6 +26,7 @@
 
 #include "method/nscsearch.hpp"
 #include "identification/simicomp.hpp"
+#include "method/nscsearch.hpp"
 //#include "identification/frequencyidentificator.hpp"
 
 using namespace nscsearch;

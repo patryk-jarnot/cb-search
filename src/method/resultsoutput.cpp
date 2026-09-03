@@ -37,12 +37,12 @@ ResultsOutput::ResultsOutput() : ResultsOutput(SortOutputBy::SCORE) {
 }
 
 
-ResultsOutput::ResultsOutput(SortOutputBy isort_by) : results(nullptr), output(nullptr), max_alignment_width(60), threshold(0.1), limit(500) {
+ResultsOutput::ResultsOutput(SortOutputBy isort_by) : results(nullptr), output(nullptr), max_alignment_width(60), threshold(0.1), limit(500), first_record_written(false) {
 	sort_by = isort_by;
 }
 
 
-ResultsOutput::ResultsOutput(SortOutputBy isort_by, float ithreshold) : results(nullptr), output(nullptr), max_alignment_width(60), threshold(ithreshold), limit(500) {
+ResultsOutput::ResultsOutput(SortOutputBy isort_by, float ithreshold) : results(nullptr), output(nullptr), max_alignment_width(60), threshold(ithreshold), limit(500), first_record_written(false) {
 	sort_by = isort_by;
 }
 
@@ -102,6 +102,9 @@ void ResultsOutput::print_details() {
 
 
 void ResultsOutput::print_json() {
+	if (first_record_written == true) {
+		*output << ",\n";
+	}
 	*output << "{\n";
 	*output << "	\"query_header\": \"" << results->query_header << "\",\n";
 	*output << "	\"hits\": [\n";
@@ -133,7 +136,7 @@ void ResultsOutput::print_json() {
 
 	}
 	*output << "	]\n";
-	*output << "}\n";
+	*output << "}";
 }
 
 
@@ -159,6 +162,45 @@ void ResultsOutput::print_abc() {
 	}
 }
 
+
+void ResultsOutput::begin_writing_json() {
+	*output << "[\n";
+}
+
+
+void ResultsOutput::end_writing_json() {
+	*output << "\n]";
+}
+
+
+void ResultsOutput::begin_writing(std::ostream *ioutput, OutputFormat ioutput_format) {
+	output = ioutput;
+	first_record_written = false;
+	switch (ioutput_format) {
+	case OutputFormat::HUMAN:
+		break;
+	case OutputFormat::JSON:
+		begin_writing_json();
+		break;
+	case OutputFormat::ABC:
+		break;
+	}
+}
+
+
+void ResultsOutput::end_writing(std::ostream *ioutput, OutputFormat ioutput_format) {
+	first_record_written = false;
+	output = ioutput;
+	switch (ioutput_format) {
+	case OutputFormat::HUMAN:
+		break;
+	case OutputFormat::JSON:
+		end_writing_json();
+		break;
+	case OutputFormat::ABC:
+		break;
+	}
+}
 
 void ResultsOutput::print_records(std::ostream *ioutput, results_t *iresults) {
 	print_records(ioutput, iresults, std::numeric_limits<int>::max());
@@ -189,6 +231,7 @@ void ResultsOutput::print_records(std::ostream *ioutput, results_t *iresults, in
 		print_abc();
 		break;
 	}
+	first_record_written = true;
 }
 
 
