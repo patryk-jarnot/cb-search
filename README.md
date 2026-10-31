@@ -18,6 +18,8 @@ apt install g++ make swig python3-dev
 
 ## Installation
 
+[![How to install the software](https://img.youtube.com/vi/oiigt9AD45g/maxresdefault.jpg)](https://www.youtube.com/watch?v=oiigt9AD45g)
+
 Release version can be downloaded from:
 [Release version v1.0.8](https://github.com/patryk-jarnot/cb-search/releases/download/v1.0.8/cbsearch-1.0.8.tar.gz)
 
@@ -104,6 +106,14 @@ To find more options use:
 ```[bash]
 cbsearch --help
 ```
+
+## Cite
+
+Jarnot, P. CB-Search: a method for searching for similar protein motifs with biased compositions. BMC Bioinformatics 27, 173 (2026). https://doi.org/10.1186/s12859-026-06509-w
+
+## Poster video
+
+[![How CB-Search works](https://img.youtube.com/vi/hsnGZjhpGUY/maxresdefault.jpg)](https://www.youtube.com/watch?v=hsnGZjhpGUY)
 
 ## Links
 * [Patryk Jarnot Web Page](https://pjarnot.com)
